@@ -33,9 +33,20 @@ public class ToDo extends PriorityQueue {
 
     private void calcPriority(Task task){
         if(sortByDays){
-            task.setPriority(Math.pow(task.getImportance(),task.getDaysSinceAdded());
+            task.setPriority((int)(Math.pow(task.getImportance(),task.getDaysSinceAdded())));
         } else {
             task.setPriority(task.getImportance());
+        }
+    }
+
+    //Removes a completed task from the ToDo list
+    public void completed(Task task){
+        int cargoIndex = findCargo(task);
+        if(cargoIndex != -1){
+            remove(cargoIndex);
+            System.out.println("Congrats! You finished " + task);
+        } else {
+            System.out.println("Task not found.");
         }
     }
 

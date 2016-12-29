@@ -29,10 +29,6 @@ public class Task extends Schedule implements Comparable {
         return this.priority - other.priority;
     }
 
-    public String getName(){
-        return this.name;
-    }
-
     public void setPriority(int input){
         this.priority = input;
     }
@@ -42,12 +38,12 @@ public class Task extends Schedule implements Comparable {
     }
 
     public int getDaysSinceAdded(){
-        return this.daysSinceAdded;0
+        return this.daysSinceAdded;
     }
 
 
     public String toString(){
-        return "TasK: " + this.name + "\n" + description + "\nPriority: " + priority;
+        return "Task: " + this.getName() + "\n" + description + "\nPriority: " + priority;
     }
 
 }

@@ -87,6 +87,17 @@ public class LinkedList {
         return node;
     }
 
+    //Takes a cargo, find and returns the index at which it is located
+    public int findCargo(Object cargo){
+        for(int i = 0;i < length;i++){
+            if(findNode(i).cargo.equals(cargo)){
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     public String toString(){
         String output = "";
         Node node = head;

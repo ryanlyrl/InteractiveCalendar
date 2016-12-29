@@ -37,10 +37,10 @@ public class Notification {
 
     public void pushNotification(Schedule item){
         if(isTime(item)){
-           popupNotification(item.name + " is happening right now!");
-           GUINotification("Boop! It's time for " + item.name);
+           popupNotification(item.getName() + " is happening right now!");
+           GUINotification("Boop! It's time for " + item.getName());
         } else if(timeDifference(item) < 1){
-            GUINotification(item.name + " is happening in " + (int)timeDifference(item) + " hours.");
+            GUINotification(item.getName() + " is happening in " + (int)timeDifference(item) + " hours.");
         }
     }
 
