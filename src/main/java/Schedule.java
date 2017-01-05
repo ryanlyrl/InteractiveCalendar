@@ -24,7 +24,7 @@ public class Schedule {
     	return this.name + "\n";
     }
 
-    public String getName()P{
+    public String getName(){
         return this.name;
     }
     

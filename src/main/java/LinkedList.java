@@ -103,6 +103,7 @@ public class LinkedList {
         Node node = head;
         for(int i = 0;i < length;i++){
             output += node;
+            node = node.next;
         }
 
         return output;

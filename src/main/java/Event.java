@@ -1,3 +1,5 @@
+import java.time.*;
+
 /**
  * @(#)Event.java
  *
@@ -26,7 +28,19 @@ public class Event extends Schedule{
     	this.to = new sDate();
     	this.description = "no description";
     }
-    
+
+    public sDate getFrom(){
+		return this.from;
+	}
+
+	public boolean isTime(){
+		if(sDate.localDatesEqual(LocalDateTime.now(),sDate.convertToLocalDateTime(this.from))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
     public String toString(){
     	return (super.toString()+"\n"+this.description+"\n"+this.from+"\n"+this.to+"\n");
     }

@@ -6,15 +6,11 @@
  * @version 1.00 2016/12/16
  */
 
-import java.io.*;
-import java.util.*;
-import java.text.*;
-import javax.sound.sampled.*;
-
 public class Tester implements java.io.Serializable{
 	
 	public static void main (String[] args) {
-		try{
+
+		/*try{
 		
 		boolean what = true;
 		ObjectOutputStream out;
@@ -61,10 +57,6 @@ public class Tester implements java.io.Serializable{
 		}
 		
 		
-    }
-
-    public Tester() {
-    }
-    
-    
+    }*/
+	}
 }

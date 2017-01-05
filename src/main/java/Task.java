@@ -16,11 +16,11 @@ public class Task extends Schedule implements Comparable {
         this.priority = -1;
     }
 
-    public Task(String name, String desc, int priority){
+    public Task(String name, String desc, int importance){
         super(name);
         this.description = desc;
         this.complete = false;
-        this.priority = priority;
+        this.importance = importance;
     }
 
     public int compareTo(Object obj){
@@ -41,9 +41,12 @@ public class Task extends Schedule implements Comparable {
         return this.daysSinceAdded;
     }
 
+    public void setDaysSinceAdded(int days) {
+        this.daysSinceAdded = days;
+    }
 
     public String toString(){
-        return "Task: " + this.getName() + "\n" + description + "\nPriority: " + priority;
+        return "Task: " + this.getName() + "\n" + description + "\nPriority: " + priority + "\n";
     }
 
 }

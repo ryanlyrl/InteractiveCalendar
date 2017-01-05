@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 /**
  * @(#)Reminder.java
  *
@@ -22,7 +24,15 @@ public class Reminder extends Schedule{
     	this.date = d;
     	
     }
-    
+
+    public boolean isTime(){
+        if(sDate.localDatesEqual(LocalDateTime.now(),sDate.convertToLocalDateTime(this.date))){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public String toString(){
     	return(super.toString()+"\n"+this.date);
     }

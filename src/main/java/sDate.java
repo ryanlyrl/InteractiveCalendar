@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+
 /**
  * @(#)Date.java
  *
@@ -97,6 +99,16 @@ public class sDate {
     	this.min = m;
     }
 
-    
-    
+    public static LocalDateTime convertToLocalDateTime(sDate date){
+		return LocalDateTime.now().withYear(date.year).withMonth(date.month).withDayOfMonth(date.day).withHour(date.hrs).withMinute(date.min);
+	}
+
+	//Used in place of equals in LocalDateTime (cannot override the original due to LocalDateTime being a final class, and this is simpler than making a wrapper class)
+	public static boolean localDatesEqual(LocalDateTime dateOne, LocalDateTime dateTwo){
+		if(dateOne.getYear() == dateTwo.getYear() && dateOne.getMonth() == dateTwo.getMonth() && dateOne.getDayOfMonth() == dateTwo.getDayOfMonth() && dateOne.getHour() == dateTwo.getHour()){
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

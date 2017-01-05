@@ -58,16 +58,21 @@ public class PriorityQueue extends LinkedList{
         }
     }
 
+    public void addLast(Object cargo){
+        add(cargo, length);
+        this.last = findNode(length);
+    }
+
     public void remove(int index){
         //If index does no exist
         if(index > length || index < 0){
             return;
         }
+
         Node node = head;
         for(int i = 0;i < index - 1;i++){
             node = node.next;
         }
-
         //Removes last object
         if(index == length){
             node.next = null;
@@ -78,6 +83,7 @@ public class PriorityQueue extends LinkedList{
         } else {
             node.next = node.next.next;
         }
+        length--;
     }
 
 }

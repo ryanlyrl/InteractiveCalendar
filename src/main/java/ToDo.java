@@ -4,6 +4,7 @@
 public class ToDo extends PriorityQueue {
 
     private boolean sortByDays; //True = priority based on time in list. False = based on importance only!
+
     public ToDo(){
         super();
     }
@@ -12,12 +13,19 @@ public class ToDo extends PriorityQueue {
         super(task);
     }
 
+    public ToDo(Task[] task){
+        super(task[0]);
+        for(int i = 1;i < task.length;i++){
+            addLast(task[i]);
+        }
+    }
+
     public void sort(){
         boolean done = false;
         while(!done) {
             done = true;
-            for (int i = 0; i < length; i++) {
-                if(((Task)findNode(i).cargo).compareTo(findNode(i+1).cargo) < 1){
+            for (int i = 0; i < length - 1; i++) {
+                if(((Task)findNode(i).cargo).compareTo(findNode(i+1).cargo) < 0){
                     swap(i, i+1);
                     done = false;
                 }
@@ -26,16 +34,33 @@ public class ToDo extends PriorityQueue {
     }
 
     private void swap(int index1,int index2){
-        Node temp = findNode(index1).next;
-        findNode(index1).next = findNode(index2).next;
-        findNode(index2).next = temp;
+        Node first = findNode(index1);
+        Node second = findNode(index2);
+        if(second.next == null) {
+            first.next = null;
+        } else {
+            first.next = second.next;
+        }
+        second.next = first;
+
+        if(index1 == 0) {
+            head = second;
+        } else {
+            findNode(index1 - 1).next = second;
+        }
     }
 
     private void calcPriority(Task task){
         if(sortByDays){
-            task.setPriority((int)(Math.pow(task.getImportance(),task.getDaysSinceAdded())));
+            task.setPriority((int)(Math.pow(task.getImportance(),task.getDaysSinceAdded()/4.0)));
         } else {
             task.setPriority(task.getImportance());
+        }
+    }
+
+    public void refreshPriority(){
+        for(int i = 0;i < this.length;i++){
+            calcPriority((Task)findNode(i).cargo);
         }
     }
 
@@ -51,15 +76,15 @@ public class ToDo extends PriorityQueue {
     }
 
     public Task pushTask(){
-        Node node = this.head;
-        while(node.next != null) {
-            calcPriority((Task)node.cargo);
-            node = node.next;
-        }
+        refreshPriority();
         sort();
         Task out = (Task)head.cargo;
-        remove(0);
+        this.remove(0);
         return out;
+    }
+
+    public void setSortByDays(boolean bool){
+        sortByDays = bool;
     }
 
 }
