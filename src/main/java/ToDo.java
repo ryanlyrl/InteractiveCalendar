@@ -20,7 +20,7 @@ public class ToDo extends PriorityQueue {
         }
     }
 
-    public void sort(){
+    /*public void sort(){
         boolean done = false;
         while(!done) {
             done = true;
@@ -30,6 +30,21 @@ public class ToDo extends PriorityQueue {
                     done = false;
                 }
             }
+        }
+    }*/
+
+    public void sort(){
+        Object[] tasks = new Object[this.length];
+        for(int i = 0;i < this.length;i++){
+            tasks[i] = findNode(i).cargo;
+        }
+        Heap heap = new Heap(tasks);
+        heap.sort();
+        for(int i = 0;i < length;i++){
+            remove(i);
+        }
+        for(int i = 0; i < heap.getSize();i++){
+            add(heap.getCargo(i), i);
         }
     }
 
@@ -59,8 +74,8 @@ public class ToDo extends PriorityQueue {
     }
 
     public void refreshPriority(){
-        for(int i = 0;i < this.length;i++){
-            calcPriority((Task)findNode(i).cargo);
+            for(int i = 0;i < this.length;i++){
+                calcPriority((Task)findNode(i).cargo);
         }
     }
 
