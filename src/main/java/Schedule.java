@@ -6,8 +6,7 @@
  * @version 1.00 2016/12/16
  */
 
-
-public class Schedule {
+public abstract class Schedule {
 	
 	private String name;
 	//Notification notification;
@@ -15,11 +14,11 @@ public class Schedule {
     public Schedule(String n) {
     	this.name = n;
     }
-    
+
     public Schedule(){
     	this.name = "unknown";
     }
-    
+
     public String toString(){
     	return this.name + "\n";
     }
@@ -27,5 +26,4 @@ public class Schedule {
     public String getName(){
         return this.name;
     }
-    
 }

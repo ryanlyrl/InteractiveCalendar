@@ -6,6 +6,7 @@ public class PriorityQueue extends LinkedList{
 
     private Node last;
 
+    //Default constructor
     public PriorityQueue(){
         super();
         this.last = null;
@@ -25,6 +26,7 @@ public class PriorityQueue extends LinkedList{
         return this.last;
     }
 
+    //Adds a node with specified cargo to specified index
     public void add(Object cargo, int index){
         Node node = head;
 
@@ -58,6 +60,7 @@ public class PriorityQueue extends LinkedList{
         }
     }
 
+    //Adds to the end of the list
     public void addLast(Object cargo){
         add(cargo, length);
         this.last = findNode(length);

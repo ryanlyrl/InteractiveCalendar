@@ -83,8 +83,8 @@ public class ToDo extends PriorityQueue {
         return out;
     }
 
-    public void setSortByDays(boolean bool){
-        sortByDays = bool;
+    public void setSortByDays(boolean sortDays){
+        sortByDays = sortDays;
     }
 
 }
