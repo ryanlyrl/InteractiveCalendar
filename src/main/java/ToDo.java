@@ -40,9 +40,12 @@ public class ToDo extends PriorityQueue {
         }
         Heap heap = new Heap(tasks);
         heap.sort();
-        for(int i = 0;i < length;i++){
-            remove(i);
+
+        int originalLength = length;
+        for(int i = 0;i < originalLength;i++){
+            remove(0);
         }
+
         for(int i = 0; i < heap.getSize();i++){
             add(heap.getCargo(i), i);
         }

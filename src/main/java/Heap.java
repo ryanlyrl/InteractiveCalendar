@@ -17,9 +17,10 @@ public class Heap {
 
     public Heap(Object[] cargo){
         for(int i = 0;i < cargo.length;i++){
-            heap[i] = cargo[i];
+            add(cargo[i]);
         }
-        reheapify(0);
+        size = cargo.length;
+        //reheapify(0);
     }
 
     public Object getCargo(int index){
@@ -53,30 +54,37 @@ public class Heap {
     public void add(Object cargo){
         heap[size] = cargo;
         reheapify(0);
+        //reheapAdd(size);
         size++;
     }
 
-    private void reheapAdd(int index){
+   /* private void reheapAdd(int index){
         if(((Task)heap[index]).compareTo(heap[getParent(index)]) < 0){
             swap(index, getParent(index));
             if(getParent(index) != 0){
                 reheapAdd(getParent(index));
             }
         }
-    }
+    }*/
 
     private void reheapify(int index){
-        if(((Task)heap[getLeft(index)]).compareTo(heap[getRight(index)]) < 0) {
-            if (((Task)heap[index]).compareTo(heap[getLeft(index)]) < 0) {
-                swap(index, getLeft(index));
+        if(index >= 0 && getRight(index) <  size) {
+            if (((Task) heap[getLeft(index)]).compareTo(heap[getRight(index)]) < 0) {
+                if (((Task) heap[index]).compareTo(heap[getLeft(index)]) > 0) {
+                    swap(index, getLeft(index));
+                }
+            } else {
+                if (((Task) heap[index]).compareTo(heap[getRight(index)]) > 0) {
+                    swap(index, getRight(index));
+                }
             }
-        } else {
-            if(((Task)heap[index]).compareTo(heap[getRight(index)]) < 0){
-                swap(index, getRight(index));
+        } else if(size == 2){
+            if(((Task)heap[0]).compareTo(heap[getLeft(0)]) > 0){
+                swap(index, getLeft(index));
             }
         }
 
-        if(index != size - 1 || index != size -2) {
+        if((index != size - 1 || index != size -2) && index < size) {
             reheapify(getLeft(index));
             reheapify(getRight(index));
         }
@@ -96,8 +104,10 @@ public class Heap {
     }
 
     public void sort(){
-        for(int i = 0;i < this.size;i++){
+        int originalSize = size;
+        for(int i = 0;i < originalSize;i++){
             remove();
         }
+        size = originalSize;
     }
 }
