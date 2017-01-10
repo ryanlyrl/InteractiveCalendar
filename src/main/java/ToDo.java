@@ -1,3 +1,8 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+
 /**
  * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/14/2016.
  */
@@ -103,6 +108,27 @@ public class ToDo extends PriorityQueue {
 
     public void setSortByDays(boolean sortDays){
         sortByDays = sortDays;
+    }
+
+    public void readFile(String file){
+        try{
+            Scanner in = new Scanner(new FileReader(file));
+            while(true){
+                String line = in.nextLine();
+                if(line != "end"){
+                    this.addLast(new Task(line, in.nextLine(), in.nextInt()));
+                } else {
+                    break;
+                }
+            }
+            refreshPriority();
+        } catch (FileNotFoundException e){
+            System.out.println("File not found.");
+        }
+    }
+
+    public void writeFile(String file){
+
     }
 
 }

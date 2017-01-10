@@ -21,6 +21,12 @@ public class Event extends Schedule{
     	this.to = t;
     	this.description = "no description";
     }
+
+    public Event(com.google.api.services.calendar.model.Event event){
+    	super(event.getId());
+    	//this.from = event.getStart().getDateTime();
+
+	}
     
     public Event(){
 		super("no name");

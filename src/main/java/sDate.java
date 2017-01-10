@@ -1,4 +1,8 @@
+import com.google.api.client.util.DateTime;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * @(#)Date.java
@@ -25,7 +29,6 @@ public class sDate {
     	this.day = 01;
     	this.hrs = 00;
     	this.min = 00;
-    	
     }
     
     public sDate(int y, int m, int d, int h, int mi){
@@ -40,7 +43,6 @@ public class sDate {
     		this.hrs = h;
     		this.min = mi;
     	}
-    	
     }
     
     public String getMName(int m){
@@ -110,5 +112,15 @@ public class sDate {
 		} else {
 			return false;
 		}
+	}
+
+	public static sDate convertTosDate(DateTime time){
+		LocalDateTime ldtTime = LocalDateTime.ofEpochSecond(time.getValue(), 0, ZoneOffset.ofHours(-5));
+		int year = ldtTime.getYear();
+		int month = ldtTime.getMonth().getValue();
+		int day = ldtTime.getDayOfMonth();
+		int hour = ldtTime.getHour();
+		int min = ldtTime.getMinute();
+		return new sDate(year, month, day, hour, min);
 	}
 }
