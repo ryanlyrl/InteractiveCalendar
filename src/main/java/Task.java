@@ -37,6 +37,10 @@ public class Task extends Schedule implements Comparable {
         return this.importance;
     }
 
+    public int getPriority(){ return this.priority; }
+
+    public String getDescription() { return this.description; }
+
     public int getDaysSinceAdded(){
         return this.daysSinceAdded;
     }

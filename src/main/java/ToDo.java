@@ -1,6 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -115,8 +113,8 @@ public class ToDo extends PriorityQueue {
             Scanner in = new Scanner(new FileReader(file));
             while(true){
                 String line = in.nextLine();
-                if(line != "end"){
-                    this.addLast(new Task(line, in.nextLine(), in.nextInt()));
+                if(!line.equals("end")){
+                    this.addLast(new Task(line, in.nextLine(), Integer.parseInt(in.nextLine())));
                 } else {
                     break;
                 }
@@ -128,7 +126,17 @@ public class ToDo extends PriorityQueue {
     }
 
     public void writeFile(String file){
-
+        try{
+            PrintWriter out = new PrintWriter(new FileWriter(file));
+            for(int i = 0;i < length;i++){
+                out.println(((Task)this.findNode(i).cargo).getName());
+                out.println(((Task)this.findNode(i).cargo).getDescription());
+                out.println(((Task)this.findNode(i).cargo).getPriority());
+            }
+            out.println("end");
+            out.close();
+        } catch (IOException e){
+            System.out.println("Error writing to file.");
+        }
     }
-
 }
