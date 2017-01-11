@@ -16,25 +16,12 @@ public class ToDo extends PriorityQueue {
         super(task);
     }
 
-    public ToDo(Task[] task){
+    public ToDo(Task[] task) {
         super(task[0]);
-        for(int i = 1;i < task.length;i++){
+        for (int i = 1; i < task.length; i++) {
             addLast(task[i]);
         }
     }
-
-    /*public void sort(){
-        boolean done = false;
-        while(!done) {
-            done = true;
-            for (int i = 0; i < length - 1; i++) {
-                if(((Task)findNode(i).cargo).compareTo(findNode(i+1).cargo) < 0){
-                    swap(i, i+1);
-                    done = false;
-                }
-            }
-        }
-    }*/
 
     public void sort(){
         Object[] tasks = new Object[this.length];
@@ -114,7 +101,7 @@ public class ToDo extends PriorityQueue {
             while(true){
                 String line = in.nextLine();
                 if(!line.equals("end")){
-                    this.addLast(new Task(line, in.nextLine(), Integer.parseInt(in.nextLine())));
+                    this.addLast(new Task(line, Integer.parseInt(in.nextLine()), sDate.parseString(in.nextLine())));
                 } else {
                     break;
                 }
@@ -130,8 +117,8 @@ public class ToDo extends PriorityQueue {
             PrintWriter out = new PrintWriter(new FileWriter(file));
             for(int i = 0;i < length;i++){
                 out.println(((Task)this.findNode(i).cargo).getName());
-                out.println(((Task)this.findNode(i).cargo).getDescription());
                 out.println(((Task)this.findNode(i).cargo).getPriority());
+                out.println(((Task)this.findNode(i).cargo).getDateAdded());
             }
             out.println("end");
             out.close();

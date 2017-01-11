@@ -1,6 +1,5 @@
 import com.google.api.client.util.DateTime;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -33,7 +32,7 @@ public class sDate {
     
     public sDate(int y, int m, int d, int h, int mi){
     	
-    	if(m<1||m>12||d<1||d>31){
+    	if(m<0||m>12||d<0||d>31){
     		System.out.println ("Error: month and date invalid");
     	}
     	else{
@@ -45,24 +44,38 @@ public class sDate {
     	}
     }
     
-    public String getMName(int m){
+    public static String getMName(int m){
     	String [] months = {"Empty", "Jan", "Feb", "March", "Apr", "May", "June", "July", "August", "Sep", "October", "Nov", "Dec"};
     	String temp = "";
     	temp = months[m];
     	return temp;
     }
+
+    public static int getMNum(String m){
+		String [] months = {"Empty", "Jan", "Feb", "March", "Apr", "May", "June", "July", "August", "Sep", "October", "Nov", "Dec"};
+		for(int i = 0;i < months.length;i++){
+			if(m.equals(months[i])){
+				return i;
+			}
+		}
+		return -1;
+	}
     
     public String toString(){
     	//if less than 10, add 0 to month and day
     	String month1 = getMName(this.month);
     	if(this.day < 10){
-    		return (month1 + " 0" + this.day +"," + this.year + " "+this.hrs+":" + this.min);
+    		return (month1 + " 0" + this.day +", " + this.year + " "+this.hrs+":" + this.min);
     	}
     	else{
-    		return (month1 + " " + this.day +"," + this.year + " "+this.hrs+":" + this.min);
+    		return (month1 + " " + this.day +", " + this.year + " "+this.hrs+":" + this.min);
     	}
     	
     }
+
+    public static sDate now(){
+    	return ldtTosDate(LocalDateTime.now());
+	}
     
     public int getYear(){
     	return this.year;
@@ -101,8 +114,26 @@ public class sDate {
     	this.min = m;
     }
 
+    public static sDate parseString(String input){
+    	input = input.replaceAll(",", "");
+    	String[] partsString = input.split(" ");
+    	int[] parts = new int[partsString.length + 1];
+    	parts[0] = sDate.getMNum(partsString[0]);
+		for(int i = 1;i < partsString.length - 1;i++){
+			parts[i] = Integer.parseInt(partsString[i]);
+		}
+
+		parts[3] = Integer.parseInt(partsString[3].substring(0,2));
+		parts[4] = Integer.parseInt(partsString[3].substring(3));
+		return new sDate(parts[2],parts[0],parts[1],parts[3],parts[4]);
+	}
+
     public static LocalDateTime convertToLocalDateTime(sDate date){
 		return LocalDateTime.now().withYear(date.year).withMonth(date.month).withDayOfMonth(date.day).withHour(date.hrs).withMinute(date.min);
+	}
+
+	public static sDate ldtTosDate(LocalDateTime date){
+    	return new sDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute());
 	}
 
 	//Used in place of equals in LocalDateTime (cannot override the original due to LocalDateTime being a final class, and this is simpler than making a wrapper class)

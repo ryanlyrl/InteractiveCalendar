@@ -54,18 +54,8 @@ public class Heap {
     public void add(Object cargo){
         heap[size] = cargo;
         reheapify(0);
-        //reheapAdd(size);
         size++;
     }
-
-   /* private void reheapAdd(int index){
-        if(((Task)heap[index]).compareTo(heap[getParent(index)]) < 0){
-            swap(index, getParent(index));
-            if(getParent(index) != 0){
-                reheapAdd(getParent(index));
-            }
-        }
-    }*/
 
     private void reheapify(int index){
         if(index >= 0 && getRight(index) <  size) {

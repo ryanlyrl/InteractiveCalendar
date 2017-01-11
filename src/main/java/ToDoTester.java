@@ -8,16 +8,6 @@ public class ToDoTester {
     public static void main(String[] args) {
         ToDo list = new ToDo();
         list.readFile("todo.txt");
-//        Task a = new Task("A", "Task A", 1000);
-//        Task b = new Task("B", "Task B", 100);
-//        Task c = new Task("C", "Task C", 10);
-//        Task d = new Task("D", "Task D", 100);
-//        a.setDaysSinceAdded(1);
-//        b.setDaysSinceAdded(3);
-//        c.setDaysSinceAdded(5);
-//        d.setDaysSinceAdded(1);
-//        Task[] tasks = {a,b,c,d};
-//        ToDo list = new ToDo(tasks);
         list.setSortByDays(true);
         System.out.println(list);
         System.out.println("\nCalculating priorities...\n");
