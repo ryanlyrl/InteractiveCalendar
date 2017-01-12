@@ -20,12 +20,14 @@ public class Event extends Schedule{
     	this.to = t;
     }
 
+    //Constructor taking an Event from Google API
     public Event(com.google.api.services.calendar.model.Event event){
     	super(event.getId());
-    	//this.from = event.getStart().getDateTime();
-
+    	this.from = sDate.convertTosDate(event.getStart().getDateTime());
+    	this.to = sDate.convertTosDate(event.getEnd().getDateTime());
 	}
-    
+
+	///Default constructor
     public Event(){
 		super("no name");
     	this.from = new sDate();
@@ -36,6 +38,7 @@ public class Event extends Schedule{
 		return this.from;
 	}
 
+	//Compares to current time
 	public boolean isTime(){
 		if(sDate.localDatesEqual(LocalDateTime.now(),sDate.convertToLocalDateTime(this.from))){
 			return true;
@@ -44,6 +47,7 @@ public class Event extends Schedule{
 		}
 	}
 
+	//ToString in format: "$name \n $from \m $to
     public String toString(){
     	return (super.toString()+"\n"+this.from+"\n"+this.to+"\n");
     }

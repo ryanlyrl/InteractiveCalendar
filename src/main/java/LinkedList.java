@@ -1,11 +1,12 @@
 /**
- * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/14/2016.
+ * Implementation of a LinkedList, created by Ryan Ly on 12/14/2016.
  */
 public class LinkedList {
 
      Node head;
      int length;
 
+     //Default constructor
     public LinkedList(){
         this.head = null;
         this.length = 0;
@@ -16,6 +17,7 @@ public class LinkedList {
         this.length = 1;
     }
 
+    //Checks if the list is empty
     public boolean isEmpty(){
         if(head == null){
             return true;
@@ -24,6 +26,7 @@ public class LinkedList {
         }
     }
 
+    //Adds a cargo to the specified index
     public void add(Object cargo, int index){
         Node node = head;
 
@@ -57,16 +60,19 @@ public class LinkedList {
         }
     }
 
+    //Adds cargo to last index (calls add())
     public void addLast(Object cargo){
         add(cargo, length);
     }
 
+    //Removes the node from the specified index
     public void remove(int index){
+        //Iterates to node at target index
         Node node = head;
         for(int i = 0;i < index - 1;i++){
             node = node.next;
         }
-
+        //Sets previous node's next to target node's next (skips target node)
         node.next = node.next.next;
     }
 
@@ -78,6 +84,7 @@ public class LinkedList {
         return head;
     }
 
+    //Returns the node at the specified index
     public Node findNode(int index){
         Node node = head;
         for(int i = 0;i < index;i++){

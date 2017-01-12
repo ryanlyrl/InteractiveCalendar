@@ -117,7 +117,7 @@ public class ToDo extends PriorityQueue {
             PrintWriter out = new PrintWriter(new FileWriter(file));
             for(int i = 0;i < length;i++){
                 out.println(((Task)this.findNode(i).cargo).getName());
-                out.println(((Task)this.findNode(i).cargo).getPriority());
+                out.println(((Task)this.findNode(i).cargo).getImportance());
                 out.println(((Task)this.findNode(i).cargo).getDateAdded());
             }
             out.println("end");

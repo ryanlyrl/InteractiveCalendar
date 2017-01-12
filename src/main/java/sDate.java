@@ -60,7 +60,7 @@ public class sDate {
 		}
 		return -1;
 	}
-    
+    //ToString in format: "{month} {date}, {year} {hours}:{mins}
     public String toString(){
     	//if less than 10, add 0 to month and day
     	String month1 = getMName(this.month);
@@ -72,11 +72,12 @@ public class sDate {
     	}
     	
     }
-
+	//Uses LocalDateTime.now() to get current time, then converts it to sDate
     public static sDate now(){
     	return ldtTosDate(LocalDateTime.now());
 	}
-    
+
+	//Accessor and mutator methods
     public int getYear(){
     	return this.year;
     }
@@ -114,29 +115,40 @@ public class sDate {
     	this.min = m;
     }
 
+    //Parses a Date string (written in same format as ToString())
     public static sDate parseString(String input){
+    	//Removes commas
     	input = input.replaceAll(",", "");
+    	//Splits the text by spaces
     	String[] partsString = input.split(" ");
+    	//Holds each part, converted to int
     	int[] parts = new int[partsString.length + 1];
+    	//Converts month to int representation
     	parts[0] = sDate.getMNum(partsString[0]);
+    	//Parses each every other part, other than time into int
 		for(int i = 1;i < partsString.length - 1;i++){
 			parts[i] = Integer.parseInt(partsString[i]);
 		}
-
+		//Hour is first 2 characters of time
 		parts[3] = Integer.parseInt(partsString[3].substring(0,2));
+		//Minutes are from index 3 to end of time
 		parts[4] = Integer.parseInt(partsString[3].substring(3));
+		//Constructs a new sDate and returns it
 		return new sDate(parts[2],parts[0],parts[1],parts[3],parts[4]);
 	}
-
+	//Converts an sDate into LocalDateTime
     public static LocalDateTime convertToLocalDateTime(sDate date){
+    	//Changes every property of the LocalDateTime to that of the sDate
 		return LocalDateTime.now().withYear(date.year).withMonth(date.month).withDayOfMonth(date.day).withHour(date.hrs).withMinute(date.min);
 	}
-
+	//Converts a LocalDateTime into an sDate
 	public static sDate ldtTosDate(LocalDateTime date){
+    	//Constructs and returns a sDate with the properties of the LocalDateTime
     	return new sDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), date.getHour(), date.getMinute());
 	}
 
 	//Used in place of equals in LocalDateTime (cannot override the original due to LocalDateTime being a final class, and this is simpler than making a wrapper class)
+	//Compares everything except for seconds
 	public static boolean localDatesEqual(LocalDateTime dateOne, LocalDateTime dateTwo){
 		if(dateOne.getYear() == dateTwo.getYear() && dateOne.getMonth() == dateTwo.getMonth() && dateOne.getDayOfMonth() == dateTwo.getDayOfMonth() && dateOne.getHour() == dateTwo.getHour()){
 			return true;
@@ -144,14 +156,16 @@ public class sDate {
 			return false;
 		}
 	}
-
+	//Converts Google API DateTime to sDate
 	public static sDate convertTosDate(DateTime time){
+		//Gets EpochSeconds from DateTime, then creates a LocalDateTime using that
 		LocalDateTime ldtTime = LocalDateTime.ofEpochSecond(time.getValue(), 0, ZoneOffset.ofHours(-5));
 		int year = ldtTime.getYear();
 		int month = ldtTime.getMonth().getValue();
 		int day = ldtTime.getDayOfMonth();
 		int hour = ldtTime.getHour();
 		int min = ldtTime.getMinute();
+		//Constructs a new sDate with the properties of the DateTime
 		return new sDate(year, month, day, hour, min);
 	}
 }

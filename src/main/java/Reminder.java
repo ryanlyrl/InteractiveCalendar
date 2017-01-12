@@ -13,18 +13,21 @@ public class Reminder extends Schedule{
 	
 	public sDate date;
 
+	//Default constructor
     public Reminder() {
     	super("no name");
     	this.date = new sDate();
     	
     }
-    
+
     public Reminder(sDate d, String n){
     	super(n);
     	this.date = d;
     	
     }
 
+    //Compares the time of a reminder with the current time
+    //Returns true if it is the time of the reminder, else false
     public boolean isTime(){
         if(sDate.localDatesEqual(LocalDateTime.now(),sDate.convertToLocalDateTime(this.date))){
             return true;
@@ -33,6 +36,7 @@ public class Reminder extends Schedule{
         }
     }
 
+    //ToString in format: "
     public String toString(){
     	return(super.toString()+"\n"+this.date);
     }

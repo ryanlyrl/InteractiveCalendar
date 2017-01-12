@@ -9,16 +9,17 @@
 public abstract class Schedule {
 	
 	private String name;
-	//Notification notification;
 
     public Schedule(String n) {
     	this.name = n;
     }
 
+    //Default constructor
     public Schedule(){
     	this.name = "unknown";
     }
 
+    //ToString in format: "Name"
     public String toString(){
     	return this.name + "\n";
     }

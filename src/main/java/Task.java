@@ -7,32 +7,32 @@ import java.time.Period;
  */
 public class Task extends Schedule implements Comparable {
 
-    private boolean complete = false;
     private int priority;
     private int importance;
     private int daysSinceAdded;
     private sDate dateAdded;
 
+    //Default constructor
     public Task(){
         super();
-        this.priority = -1;
+        this.importance = -1;
         this.daysSinceAdded = -1;
         this.dateAdded = new sDate();
     }
-
+    //Constructor for creating a new task
     public Task(String name, int importance){
         super(name);
         this.importance = importance;
         this.daysSinceAdded = 0;
         this.dateAdded = sDate.now();
     }
-
+    //Constructor for importing an existing class
     public Task(String name, int importance, int daysSinceAdded){
         super(name);
         this.importance = importance;
         this.daysSinceAdded = daysSinceAdded;
     }
-
+    //Contructor taking an sDate, automatically converts to daysSinceAdded
     public Task(String name, int importance, sDate dateAdded){
         super(name);
         this.importance = importance;
@@ -41,13 +41,13 @@ public class Task extends Schedule implements Comparable {
         Period period = Period.between(sDate.convertToLocalDateTime(dateAdded).toLocalDate(), LocalDate.now());
         this.daysSinceAdded = period.getDays();
     }
-
+    //Compares two tasks (implements Comparable)
     public int compareTo(Object obj){
         Task other = (Task)obj;
 
         return this.priority - other.priority;
     }
-
+    //Accessor and mutator methods
     public void setPriority(int input){
         this.priority = input;
     }
@@ -68,6 +68,7 @@ public class Task extends Schedule implements Comparable {
         this.daysSinceAdded = days;
     }
 
+    //ToString in format: "TasK: {name} Priority: {priority}
     public String toString(){
         return "Task: " + this.getName() + "\nPriority: " + priority + "\n";
     }
