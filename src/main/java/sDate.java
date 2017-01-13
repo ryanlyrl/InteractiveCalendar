@@ -115,6 +115,33 @@ public class sDate {
     	this.min = m;
     }
 
+	public static int gethrs (String temp){
+		String hr = "";
+		for(int i = 0; i < temp.length(); i ++){
+			if(temp.charAt(i)!= ':'){
+				hr +=temp.charAt(i);
+			}
+			else{
+				i = temp.length()+2;
+			}
+		}
+		return Integer.parseInt(hr);
+	}
+
+	public static int getmin (String temp){
+		String min = "";
+		boolean what = false;
+		for(int i = 0; i < temp.length()-1; i ++){
+			if(temp.charAt(i) == ':'){
+				what = true;
+			}
+			if(what){
+				min += temp.charAt(i+1);
+			}
+		}
+		return Integer.parseInt(min);
+	}
+
     //Parses a Date string (written in same format as ToString())
     public static sDate parseString(String input){
     	//Removes commas
