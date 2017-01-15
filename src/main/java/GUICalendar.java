@@ -1,3 +1,9 @@
+/**
+ * GUICalendar.java
+ *
+ * @author Stephanie Wang and Ryan Ly
+ * @version 1.00 2016/12/20
+ */
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -5,23 +11,20 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
+import java.util.GregorianCalendar;
 
+//TODO: Comment methods so that it is clear who wrote what (for marking purposes)
+//Arrows denote changes in code done by Ryan ( '>' = open, '<' = close)
 public class GUICalendar extends JFrame implements ActionListener{
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	static JLabel lblMonthandYear, lblText;
-    JButton btnPrev, btnNext, btnAdd;
+    JButton btnPrev, btnNext, btnAdd, btnToDoAdd;
     static JTable tblCal;
     Container pane;
     static DefaultTableModel defCal;
@@ -33,6 +36,10 @@ public class GUICalendar extends JFrame implements ActionListener{
     static boolean selectedCell = false;
     static FileWriter fw = null;
     File file = new File ("memory.txt");
+	ToDo toDoList = new ToDo();
+	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	private final String TO_DO_FILE = "todo.txt";
+	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	
    
 
@@ -60,8 +67,14 @@ public class GUICalendar extends JFrame implements ActionListener{
         
         btnPrev = new JButton("<");
         btnNext = new JButton(">");
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        btnToDoAdd = new JButton("Add to ToDo List");
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         btnAdd = new JButton("+");
         btnAdd.setBackground(Color.PINK);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        btnToDoAdd.setBackground(Color.LIGHT_GRAY);
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         defCal = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row, int col){
@@ -78,6 +91,9 @@ public class GUICalendar extends JFrame implements ActionListener{
         btnPrev.addActionListener(this);
         btnNext.addActionListener(this);
         btnAdd.addActionListener(this);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        btnToDoAdd.addActionListener(this);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         pane.add(pnlCal);
         pnlCal.add(lblMonthandYear);
@@ -85,6 +101,9 @@ public class GUICalendar extends JFrame implements ActionListener{
         pnlCal.add(btnPrev);
         pnlCal.add(btnNext);
         pnlCal.add(btnAdd);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        pnlCal.add(btnToDoAdd);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         pnlCal.add(sCal);
 
         this.setVisible(true);
@@ -96,6 +115,9 @@ public class GUICalendar extends JFrame implements ActionListener{
         btnPrev.setBounds(10, 25, 50, 25);
         btnNext.setBounds(420, 25, 50, 25);
         btnAdd.setBounds(410, 390, 50, 50);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        btnToDoAdd.setBounds(500, 390, 50, 25);
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         tblCal.setBounds(10, 120, 460, 375);
         sCal.setBounds(10,65,460, 385);
 
@@ -118,7 +140,16 @@ public class GUICalendar extends JFrame implements ActionListener{
     	
 
         changing(currentMonth, currentYear);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		toDoList.readFile(TO_DO_FILE);
 
+		this.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent evt) {
+				toDoList.writeFile(TO_DO_FILE);
+				System.exit(0);
+			}
+		});
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     }
     
@@ -252,7 +283,22 @@ public class GUICalendar extends JFrame implements ActionListener{
     		selectedCell = false;
     		changing1(currentMonth, currentYear);
     		//reading();
-    	}
+			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    	} else if (e.getActionCommand().equals("Add to ToDo List")){
+			String name = JOptionPane.showInputDialog("Item Name");
+			boolean validImp = false;
+			String[] option = {"Low","Medium","High"};
+			int importance = JOptionPane.showOptionDialog(null,
+					"Importance",
+					"Pick the importance of the task.",
+					JOptionPane.DEFAULT_OPTION,
+					JOptionPane.PLAIN_MESSAGE,
+					null,
+					option,
+					option[0]) + 1;
+			toDoList.addLast(new Task(name, importance));
+		}
+			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     	else{
     		try{
     		if(defCal.getValueAt(selectedRow, selectedCol)==null){

@@ -1,5 +1,8 @@
 /**
- * Created by Ryan on 2017-01-07.
+ * Heap.java - Heap data structure, primarily used for heat sort
+ *
+ * @author Ryan Ly
+ * @version 1.00 2017/01/07
  */
 public class Heap {
 

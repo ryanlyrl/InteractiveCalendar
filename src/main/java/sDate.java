@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
- * @(#)Date.java
+ * sDate.java - A custom date object for use with events in calendar
  *
  *
- * @author 
+ * @author Stephanie Wang and Ryan Ly
  * @version 1.00 2016/12/13
  */
 

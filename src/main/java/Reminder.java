@@ -1,13 +1,11 @@
-import java.time.LocalDateTime;
-
 /**
- * @(#)Reminder.java
+ * Reminder.java - Reminder object that holds a reminder for a certain date
  *
- *
- * @author 
+ * @author Stephanie Wang and Ryan Ly
  * @version 1.00 2016/12/16
  */
 
+import java.time.LocalDateTime;
 
 public class Reminder extends Schedule{
 	

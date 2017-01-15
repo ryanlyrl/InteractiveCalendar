@@ -1,5 +1,8 @@
 /**
- * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/14/2016.
+ * Node.java - Object held by Linked List
+ *
+ * @author Ryan Ly
+ * @version 1.00 2016/12/14
  */
 
 public class Node {

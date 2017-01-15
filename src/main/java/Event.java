@@ -1,12 +1,11 @@
-import java.time.*;
-
 /**
- * @(#)Event.java
+ * Event.java - Event object that holds an event with that begins and ends at certain times (i.e. a party)
  *
- *
- * @author 
+ * @author Ryan Ly and Stephanie Wang
  * @version 1.00 2016/12/16
  */
+
+import java.time.*;
 
 
 public class Event extends Schedule{
@@ -47,7 +46,7 @@ public class Event extends Schedule{
 		}
 	}
 
-	//ToString in format: "$name \n $from \m $to
+	//ToString in format: "{name} \n {from} \n {to}
     public String toString(){
     	return (super.toString()+"\n"+this.from+"\n"+this.to+"\n");
     }

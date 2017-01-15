@@ -1,5 +1,8 @@
 /**
- * Implementation of a LinkedList, created by Ryan Ly on 12/14/2016.
+ * LinkedList.java - An implementation of a Linked List structure to be extended into a Priority Queue
+ *
+ * @author Ryan Ly
+ * @version 1.00 2016/12/14
  */
 public class LinkedList {
 

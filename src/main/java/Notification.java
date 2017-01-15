@@ -1,9 +1,13 @@
+/**
+ * Notification.java - used to push notifications for events
+ *
+ * @author Ryan Ly
+ * @version 1.00 2016/12/21
+ */
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-/**
- * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/21/2016.
- */
 public class Notification {
 
     private double timeDifference(Reminder item){

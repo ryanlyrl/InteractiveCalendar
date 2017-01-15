@@ -1,5 +1,8 @@
 /**
- * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/14/2016.
+ * PriorityQueue.java - extension of Linked List that uses FIFO, and allows for sorting based on the objects contained
+ *
+ * @author Ryan Ly
+ * @version 1.00 2016/12/14
  */
 
 public class PriorityQueue extends LinkedList{

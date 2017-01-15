@@ -1,9 +1,13 @@
+/**
+ * ToDo.java - uses PriorityQueue in order to hold tasks into a todo list
+ *
+ * @author Ryan Ly
+ * @version 1.00 2016/12/14
+ */
+
 import java.io.*;
 import java.util.Scanner;
 
-/**
- * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/14/2016.
- */
 public class ToDo extends PriorityQueue {
 
     private boolean sortByDays; //True = priority based on time in list. False = based on importance only!
@@ -16,6 +20,7 @@ public class ToDo extends PriorityQueue {
         super(task);
     }
 
+    //Creates a list with tasks from array
     public ToDo(Task[] task) {
         super(task[0]);
         for (int i = 1; i < task.length; i++) {
@@ -23,6 +28,7 @@ public class ToDo extends PriorityQueue {
         }
     }
 
+    //Sorts the ToDo list
     public void sort(){
         Object[] tasks = new Object[this.length];
         for(int i = 0;i < this.length;i++){

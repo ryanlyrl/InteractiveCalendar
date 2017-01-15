@@ -1,10 +1,13 @@
+/**
+ * Task.java - Object for holding a task (something that needs to be done, but not at a specific time)
+ *
+ * @author Ryan Ly
+ * @version 1.00 2016/12/16
+ */
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 
-/**
- * ICS4UR-Summative-V1.0, created by Ryan Ly on 12/16/2016.
- */
 public class Task extends Schedule implements Comparable {
 
     private int priority;
