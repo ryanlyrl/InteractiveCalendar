@@ -82,7 +82,7 @@ public class GUICalendar extends JFrame implements ActionListener{
 		btnRemove.setBackground(Color.LIGHT_GRAY);
 		//txtTodo.setBackground(tblCal.getBackground());
 		cbDropdown.setBackground(Color.WHITE);
-		txtTodo.setEditable(false);
+		txtTodo.setEditable(false); //Makes TextArea uneditable
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         defCal = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
@@ -167,9 +167,11 @@ public class GUICalendar extends JFrame implements ActionListener{
         changing(currentMonth, currentYear);
 
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		//Reads the file for ToDo list, then writes it to the TextArea/ComboBox and the ToDo list
 		toDoList.readFile(TO_DO_FILE);
 		writeToDo(toDoList);
 
+		//Changes close operation to write ToDo list to the file
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
 				toDoList.writeFile(TO_DO_FILE);
@@ -348,19 +350,27 @@ public static void reReading(){
     		selectedCell = false;
     		changing(currentMonth, currentYear);
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+			//Handles the add task button
 		} else if (e.getActionCommand().equals("Add task")){
     		boolean done = false;
 			String name = "";
+			//Loops until a valid input is inputted
 			while(!done) {
+				//name of event is input of a jOptionPane
 				name = JOptionPane.showInputDialog("Item Name");
 				done = true;
+				//Makes sure the input isn't cancelled
 				if(name != null){
+					//makes sure input isn't blank or just space
 					if(name.trim().equals("")) {
+						JOptionPane.showMessageDialog(null, "Invalid input.");
 						done = false;
 					}
 				}
 			}
 			if(name != null) {
+				//Option dialog with option (low, med, high) for importance of the task
+				//Option dialog return 0-2, so add 2 to give 2-4
 				String[] option = {"Low","Medium","High"};
 				int importance = (JOptionPane.showOptionDialog(null,
 					"Pick the importance of the task.",
@@ -370,24 +380,34 @@ public static void reReading(){
 					null,
 					option,
 					option[0]) + 2);
+				//Adds the task to the end of the list
 				toDoList.addLast(new Task(name, importance));
 			}
+			//Refreshes the text area and the combo box
 			writeToDo(toDoList);
-		} else  if(e.getActionCommand().equals("Give me a task!")){
+		} else  if(e.getActionCommand().equals("Give me a task!")){ //Handles giving the user a task
+			//If the todo list is not empty, push the highest priority task
 			if(toDoList.length > 0) {
 				JOptionPane.showMessageDialog(null, "Task for you to do!\n" + toDoList.pushTask().getName());
 			} else {
 				JOptionPane.showMessageDialog(null, "You have no tasks left to do!");
 			}
+			//Refresh the text area and comob box
 			writeToDo(toDoList);
-		} else if(e.getActionCommand().equals("timer")){
+		} else if(e.getActionCommand().equals("timer")){ //Handles the timer ticking every minute for notifications
+			    //Reads events file (memory.txt)
 				ArrayList<String> fileContent = readFile();
+				//Reads each event (each event is 6 lines long)
 				for (int i = 0; i < fileContent.size() / 6; i++) {
+					//Date is the 5th line in the event
 					String dates = fileContent.get(i * 6 + 5);
+					//Name is the 4th line in the event
 					String name = fileContent.get(i * 6 + 4);
+					//If the event contains a 'to', it is an event
 					if (dates.contains("to")) {
 						int index1 = 0;
 						int index2 = 0;
+						//Splits the date into the to and from date
 						for (int j = 0; j < dates.length(); j++) {
 							if (dates.charAt(j) == ':') {
 								index1 = j + 2;
@@ -395,22 +415,31 @@ public static void reReading(){
 								break;
 							}
 						}
+						//to date is index 1 to 2 after the colon
 						sDate from = sDate.parseString(dates.substring(1, index1 + 1));
+						//from date starts 7 indices away from first colon
 						sDate to = sDate.parseString(dates.substring(index2));
 
+						//Creates a new event, then checks if it is time to show a notification
 						Event evt = new Event(from, to, name);
-						if (Notification.pushNotification(evt) != null) {
+						if (Notification.pushNotification(evt) != null) { //null means not time
+							//Prints the message returned by notification if it is time
 							JOptionPane.showMessageDialog(null, Notification.pushNotification(evt));
 						}
 					} else {
+						//New reminder with date and name from file
 						Reminder remind = new Reminder(sDate.parseString(dates.substring(1)), name);
-						if (Notification.pushNotification(remind) != null) {
+						if (Notification.pushNotification(remind) != null) { //null means not time
+							//Prints message returned by notification if it is time
 							JOptionPane.showMessageDialog(null, Notification.pushNotification(remind));
 						}
 					}
 				}
-		} else if(e.getActionCommand().equals("Remove")){
+		} else if(e.getActionCommand().equals("Remove")){ //Handles removing from the todo list using the combobox
+			//Items in combobox are the same order as textarea
+			//Removes the item in the index selected in combobox
 			toDoList.remove(cbDropdown.getSelectedIndex());
+			//Refreshes combo box/textarea
 			writeToDo(toDoList);
 		}
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -579,17 +608,22 @@ public static void reReading(){
     }
 
     //>>>>>>>>>>>>>>>
+	//Refreshes the textarea and combobox for todolist
 	public static void writeToDo(ToDo list){
+    	//Clears combobox
     	cbDropdown.removeAllItems();
+    	//If the list is empty, then display a message in the textarea
     	if(list.length == 0){
     		txtTodo.setText("No tasks to do!");
     		return;
 		}
     	String output = "";
+    	//Iterate through the list, adding each to the text area and the combo box
     	for(int i = 0;i < list.length;i++){
     		output += (((Task)(list.findNode(i)).cargo).getName() + "\n");
     		cbDropdown.addItem(((Task)(list.findNode(i)).cargo).getName());
 		}
+		//Outputs the text area text
 		txtTodo.setText(output);
 	}
     

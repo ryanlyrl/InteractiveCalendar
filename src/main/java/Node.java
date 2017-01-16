@@ -10,6 +10,7 @@ public class Node {
     Object cargo;
     Node next;
 
+    //Default constructor
     public Node(){
         this.cargo = null;
         this.next = null;
@@ -21,6 +22,7 @@ public class Node {
     }
 
     @Override
+    //Prints the cargo
     public String toString(){
         return cargo.toString();
     }

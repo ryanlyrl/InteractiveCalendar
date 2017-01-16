@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 public class Notification {
 
+    //note: these are now deprecated due to changes in the GUI system
+    //uses java.time.Duration to get the difference between now and when the event/reminder happens
     private double timeDifference(Reminder item){
         return Duration.between(LocalDateTime.now(), sDate.convertToLocalDateTime(item.date)).getSeconds();
     }
@@ -18,7 +20,9 @@ public class Notification {
         return Duration.between(LocalDateTime.now(), sDate.convertToLocalDateTime(item.getFrom())).getSeconds();
     }
 
+    //Returns a message if it is currently time for a reminder
     public static String pushNotification(Reminder item){
+        //Checks if current time matches reminder's time
         if(item.isTime()) {
             return item.getName() + " is happening right now!";
         } else {
@@ -26,7 +30,9 @@ public class Notification {
         }
     }
 
+    //Returns a message if it is currently time for an event
     public static String pushNotification(Event item){
+        //Checks if current time matches event's start time
         if(item.isTime()) {
             return item.getName() + " is happening right now!";
         } else {

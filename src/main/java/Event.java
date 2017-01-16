@@ -20,6 +20,7 @@ public class Event extends Schedule{
     }
 
     //Constructor taking an Event from Google API
+	//Written by Ryan Ly
     public Event(com.google.api.services.calendar.model.Event event){
     	super(event.getId());
     	this.from = sDate.convertTosDate(event.getStart().getDateTime());
@@ -38,6 +39,7 @@ public class Event extends Schedule{
 	}
 
 	//Compares to current time
+	//Written by Ryan Ly
 	public boolean isTime(){
 		if(sDate.localDatesEqual(LocalDateTime.now(),sDate.convertToLocalDateTime(this.from))){
 			System.out.println(LocalDateTime.now() + " and " + sDate.convertToLocalDateTime(this.from));
