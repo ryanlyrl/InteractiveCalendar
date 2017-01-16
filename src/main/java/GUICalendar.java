@@ -18,7 +18,7 @@ public class GUICalendar extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	static JLabel lblMonthandYear, lblText, lblTodoHeader;
 	static JTextArea txtTodo;
-    JButton btnPrev, btnNext, btnAdd, btnToDoAdd, btnPushToDo;
+    JButton btnPrev, btnNext, btnAdd, btnToDoAdd, btnPushToDo, btnRemove;
     static JTable tblCal;
     Container pane;
     static DefaultTableModel defCal;
@@ -34,6 +34,7 @@ public class GUICalendar extends JFrame implements ActionListener{
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 	ToDo toDoList = new ToDo();
 	private final String TO_DO_FILE = "todo.txt";
+	static JComboBox<String> cbDropdown;
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     public GUICalendar(){   		
@@ -67,14 +68,20 @@ public class GUICalendar extends JFrame implements ActionListener{
         btnNext = new JButton(">");
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		btnToDoAdd = new JButton("Add task");
-		btnPushToDo = new JButton("GIVE ME SOME SHIT TO DO!");
+		btnPushToDo = new JButton("Give me a task!");
+		btnRemove = new JButton("Remove");
+		cbDropdown = new JComboBox<>();
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         btnAdd = new JButton("+");
         btnAdd.setBackground(Color.PINK);
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		btnToDoAdd.setBackground(Color.LIGHT_GRAY);
 		btnPushToDo.setBackground(Color.LIGHT_GRAY);
+		btnPrev.setBackground(Color.PINK);
+		btnNext.setBackground(Color.PINK);
+		btnRemove.setBackground(Color.LIGHT_GRAY);
 		//txtTodo.setBackground(tblCal.getBackground());
+		cbDropdown.setBackground(Color.WHITE);
 		txtTodo.setEditable(false);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         defCal = new DefaultTableModel(){
@@ -96,6 +103,7 @@ public class GUICalendar extends JFrame implements ActionListener{
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		btnToDoAdd.addActionListener(this);
 		btnPushToDo.addActionListener(this);
+		btnRemove.addActionListener(this);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
@@ -111,6 +119,8 @@ public class GUICalendar extends JFrame implements ActionListener{
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		pnlCal.add(btnToDoAdd);
 		pnlCal.add(btnPushToDo);
+		pnlCal.add(cbDropdown);
+		pnlCal.add(btnRemove);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         this.setVisible(true);
@@ -131,7 +141,9 @@ public class GUICalendar extends JFrame implements ActionListener{
         sCal.setBounds(10,65,460, 385);
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		btnToDoAdd.setBounds(500, 390, 100, 25);
-		btnPushToDo.setBounds(700, 390, 100, 25);
+		btnPushToDo.setBounds(700, 390, 125, 25);
+		cbDropdown.setBounds(550, 420, 150, 25);
+		btnRemove.setBounds(710,420,85,25);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         for(int i = 0; i < week.length; i++){
@@ -361,7 +373,7 @@ public static void reReading(){
 				toDoList.addLast(new Task(name, importance));
 			}
 			writeToDo(toDoList);
-		} else  if(e.getActionCommand().equals("GIVE ME SOME SHIT TO DO!")){
+		} else  if(e.getActionCommand().equals("Give me a task!")){
 			if(toDoList.length > 0) {
 				JOptionPane.showMessageDialog(null, "Task for you to do!\n" + toDoList.pushTask().getName());
 			} else {
@@ -383,7 +395,7 @@ public static void reReading(){
 								break;
 							}
 						}
-						sDate from = sDate.parseString(dates.substring(0, index1 + 1));
+						sDate from = sDate.parseString(dates.substring(1, index1 + 1));
 						sDate to = sDate.parseString(dates.substring(index2));
 
 						Event evt = new Event(from, to, name);
@@ -391,12 +403,15 @@ public static void reReading(){
 							JOptionPane.showMessageDialog(null, Notification.pushNotification(evt));
 						}
 					} else {
-						Reminder remind = new Reminder(sDate.parseString(dates), name);
+						Reminder remind = new Reminder(sDate.parseString(dates.substring(1)), name);
 						if (Notification.pushNotification(remind) != null) {
 							JOptionPane.showMessageDialog(null, Notification.pushNotification(remind));
 						}
 					}
 				}
+		} else if(e.getActionCommand().equals("Remove")){
+			toDoList.remove(cbDropdown.getSelectedIndex());
+			writeToDo(toDoList);
 		}
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     	else{
@@ -442,6 +457,7 @@ public static void reReading(){
 							out.append(temp.toString());
 							out.newLine();
 							out.close();
+							defCal.setValueAt("<html><b>"+defCal.getValueAt(selectedRow,selectedCol)+"</html>",selectedRow,selectedCol);
 						}
 						else{
 							JOptionPane.showMessageDialog(pnlCal, "Invalid Time");
@@ -564,6 +580,7 @@ public static void reReading(){
 
     //>>>>>>>>>>>>>>>
 	public static void writeToDo(ToDo list){
+    	cbDropdown.removeAllItems();
     	if(list.length == 0){
     		txtTodo.setText("No tasks to do!");
     		return;
@@ -571,6 +588,7 @@ public static void reReading(){
     	String output = "";
     	for(int i = 0;i < list.length;i++){
     		output += (((Task)(list.findNode(i)).cargo).getName() + "\n");
+    		cbDropdown.addItem(((Task)(list.findNode(i)).cargo).getName());
 		}
 		txtTodo.setText(output);
 	}
