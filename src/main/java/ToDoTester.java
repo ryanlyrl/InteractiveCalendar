@@ -8,7 +8,6 @@ public class ToDoTester {
     public static void main(String[] args) {
         ToDo list = new ToDo();
         list.readFile("todo.txt");
-        list.setSortByDays(true);
         System.out.println(list);
         System.out.println("\nCalculating priorities...\n");
         list.refreshPriority();

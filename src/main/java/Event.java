@@ -7,25 +7,18 @@
 
 import java.time.*;
 
-
+//Inherits from Schedule (subclass class)
 public class Event extends Schedule{
 	
 	private sDate from;
 	private sDate to;
 
+	//Constructor that takes date and name
     public Event(sDate f, sDate t, String n) {
 		super(n);
     	this.from = f;
     	this.to = t;
     }
-
-    //Constructor taking an Event from Google API
-	//Written by Ryan Ly
-    public Event(com.google.api.services.calendar.model.Event event){
-    	super(event.getId());
-    	this.from = sDate.convertTosDate(event.getStart().getDateTime());
-    	this.to = sDate.convertTosDate(event.getEnd().getDateTime());
-	}
 
 	///Default constructor
     public Event(){
@@ -33,7 +26,8 @@ public class Event extends Schedule{
     	this.from = new sDate();
     	this.to = new sDate();
     }
-
+    
+    //Method to retrieve the time
     public sDate getFrom(){
 		return this.from;
 	}

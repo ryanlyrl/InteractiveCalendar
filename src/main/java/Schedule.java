@@ -6,10 +6,12 @@
  * @version 1.00 2016/12/16
  */
 
+//Super class
 public abstract class Schedule {
 	
 	private String name;
-
+	
+	//Constructor that takes a string (name)
     public Schedule(String n) {
     	this.name = n;
     }
@@ -23,7 +25,8 @@ public abstract class Schedule {
     public String toString(){
     	return this.name + "\n";
     }
-
+    
+    //Method that retrieves the name
     public String getName(){
         return this.name;
     }

@@ -1,5 +1,3 @@
-import com.google.api.client.util.DateTime;
-
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -19,9 +17,8 @@ public class sDate {
 	int day;
 	int hrs;
 	int min;
-	//declr\are array for months
-	//String mon [];
-
+	
+	//Default constructor
     public sDate() {
     	this.year = 2017;
     	this.month = 01;
@@ -30,8 +27,9 @@ public class sDate {
     	this.min = 00;
     }
     
+    //Constructor that takes yyy/mmm/ddd/ as well as hrs and min
     public sDate(int y, int m, int d, int h, int mi){
-    	
+    	//Checking if the date is valid.
     	if(m<0||m>12||d<0||d>31){
     		System.out.println ("Error: month and date invalid");
     	}
@@ -43,14 +41,16 @@ public class sDate {
     		this.min = mi;
     	}
     }
-
+    
+    //Retrieving the name of the month (converting number to name)
     public static String getMName(int m){
     	String [] months = {"Empty", "Jan", "Feb", "March", "Apr", "May", "June", "July", "August", "Sep", "October", "Nov", "Dec"};
     	String temp = "";
     	temp = months[m];
     	return temp;
     }
-
+    
+    //Retrieving the number of the month (converting name to number)
     public static int getMNum(String m){
 		String [] months = {"Empty", "Jan", "Feb", "March", "Apr", "May", "June", "July", "August", "Sep", "October", "Nov", "Dec"};
 		for(int i = 0;i < months.length;i++){
@@ -60,11 +60,13 @@ public class sDate {
 		}
 		return -1;
 	}
+    
     //ToString in format: "{month} {date}, {year} {hours}:{mins}
 	public String toString(){
-		//if less than 10, add 0 to month and day
+		//if less than 10, add 0 to day
 		String month1 = getMName(this.month);
 		if(this.day < 10){
+			//Adding 0 to minute if less than 10, to have the format 00:00
 			if(this.min<10){
 				return (month1 + " 0" + this.day +"," + this.year + " "+this.hrs+":" + "0"+ this.min);
 			}
@@ -127,7 +129,7 @@ public class sDate {
     	this.min = m;
     }
 
-
+    //Method to retrieve the hrs from a time (format 00:00)
 	public static int gethrs (String temp){
 		String hr = "";
 		for(int i = 0; i < temp.length(); i ++){
@@ -141,6 +143,7 @@ public class sDate {
 		return Integer.parseInt(hr);
 	}
 
+	//Method to retrieve the min from a time (format 00:00)
 	public static int getmin (String temp){
 		String min = "";
 		boolean what = false;
@@ -170,7 +173,11 @@ public class sDate {
 			parts[i] = Integer.parseInt(partsString[i]);
 		}
 		//Hour is first 2 characters of time
-		parts[3] = Integer.parseInt(partsString[3].substring(0,2));
+		if(partsString[3].charAt(2) == ':') {
+			parts[3] = Integer.parseInt(partsString[3].substring(0, 2));
+		} else {
+			parts[3] = Integer.parseInt(partsString[3].substring(0,1));
+		}
 		//Minutes are from index 3 to end of time
 		parts[4] = Integer.parseInt(partsString[3].substring(3));
 		//Constructs a new sDate and returns it
@@ -196,17 +203,5 @@ public class sDate {
 		} else {
 			return false;
 		}
-	}
-	//Converts Google API DateTime to sDate
-	public static sDate convertTosDate(DateTime time){
-		//Gets EpochSeconds from DateTime, then creates a LocalDateTime using that
-		LocalDateTime ldtTime = LocalDateTime.ofEpochSecond(time.getValue(), 0, ZoneOffset.ofHours(-5));
-		int year = ldtTime.getYear();
-		int month = ldtTime.getMonth().getValue();
-		int day = ldtTime.getDayOfMonth();
-		int hour = ldtTime.getHour();
-		int min = ldtTime.getMinute();
-		//Constructs a new sDate with the properties of the DateTime
-		return new sDate(year, month, day, hour, min);
 	}
 }

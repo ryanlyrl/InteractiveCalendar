@@ -41,10 +41,11 @@ public class GUICalendar extends JFrame implements ActionListener{
     	
         String [] week = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
         
-        currentMonth = 1;
+        currentMonth = 0;
         currentYear = 2017;
-        currentDay = 13;
-
+        currentDay = 0;
+        
+        //Setting layout
         this.setSize(900,500);
         this.setTitle("ICS4UR vs 1.0");
         pane = this.getContentPane();
@@ -55,6 +56,7 @@ public class GUICalendar extends JFrame implements ActionListener{
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         this.setResizable(false);
         
+        //Creating necessary objects eg. JLabel, JButton
         lblText = new JLabel();
         txtTodo = new JTextArea();
         lblTodoHeader = new JLabel();
@@ -84,19 +86,21 @@ public class GUICalendar extends JFrame implements ActionListener{
 		cbDropdown.setBackground(Color.WHITE);
 		txtTodo.setEditable(false); //Makes TextArea uneditable
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		
         defCal = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row, int col){
                 return false;
             }
         };
-
+        
         tblCal = new JTable(defCal);
         sCal = new JScrollPane(tblCal);
         pnlCal = new JPanel(null);
 
         pnlCal.setBorder(BorderFactory.createTitledBorder("calendar"));
-
+        
+        //Allowing buttons to function
         btnPrev.addActionListener(this);
         btnNext.addActionListener(this);
         btnAdd.addActionListener(this);
@@ -106,7 +110,7 @@ public class GUICalendar extends JFrame implements ActionListener{
 		btnRemove.addActionListener(this);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-
+		//Adding elements to the panel
         pane.add(pnlCal);
         pnlCal.add(lblMonthandYear);
         pnlCal.add(lblText);
@@ -122,7 +126,8 @@ public class GUICalendar extends JFrame implements ActionListener{
 		pnlCal.add(cbDropdown);
 		pnlCal.add(btnRemove);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+		
+		//Setting bounds to objects (formatting)
         this.setVisible(true);
         pnlCal.setBounds(0, 0,880, 460);
         lblMonthandYear.setBounds(190, 25, 100, 25);
@@ -131,7 +136,6 @@ public class GUICalendar extends JFrame implements ActionListener{
         lblTodoHeader.setVerticalAlignment(JLabel.TOP);
         txtTodo.setBounds(510, 250, 300, 125);
         txtTodo.setText("empty");
-        //txtTodo.setVerticalAlignment(JLabel.TOP);
         lblText.setBounds(510, 25, 400, 200);
         lblText.setText("empty");
         btnPrev.setBounds(10, 25, 50, 25);
@@ -145,25 +149,28 @@ public class GUICalendar extends JFrame implements ActionListener{
 		cbDropdown.setBounds(550, 420, 150, 25);
 		btnRemove.setBounds(710,420,85,25);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
+		
+		//Adding the week to the header
         for(int i = 0; i < week.length; i++){
             defCal.addColumn(week[i]);
         }
         
+        //More formattng for JTable
         tblCal.getParent().setBackground(tblCal.getBackground());
         tblCal.getTableHeader().setResizingAllowed(false);
 
+        //Allowing selection
         tblCal.setColumnSelectionAllowed(true);
         tblCal.setRowSelectionAllowed(true);
         tblCal.setCellSelectionEnabled(true);
         tblCal.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
-
+        //Formatting
         tblCal.setRowHeight(60);
         defCal.setColumnCount(7);
         defCal.setRowCount(6);
     	
-
+        //Method that refreshes the JTable and JLabels
         changing(currentMonth, currentYear);
 
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -181,17 +188,19 @@ public class GUICalendar extends JFrame implements ActionListener{
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     }
-
+    
+    //Method used to read the memory text file
 	public static void reading(){
-		//reads memory text
 		try{
 			String list="";
 			BufferedReader in;
 			in = new BufferedReader(new FileReader("memory.txt"));
 			String content = in.readLine();
+			//Checking if the memory is empty or not
 			if(content!= null){
-				//GET THE WHILE LOOP TO WORK!!
 				while(content!=null){
+					//Portion for selected Cells
+					//Outputs information onto JLabel for that specific date/cell
 					if(selectedCell){
 						if(Integer.parseInt(content)== currentYear){
 							content = in.readLine();
@@ -205,6 +214,7 @@ public class GUICalendar extends JFrame implements ActionListener{
 										lblText.setText("<html>"+list+"</html");
 										content = in.readLine();
 									}
+									//If the date does not match, move on to the next event/reminder
 									else{
 										content = in.readLine();
 										content = in.readLine();
@@ -235,8 +245,9 @@ public class GUICalendar extends JFrame implements ActionListener{
 							content = in.readLine();
 						}
 					}
+					//Refresh calendar in general
+					//If there is a day with an event or reminder, it will bold the date
 					else{
-
 						if(Integer.parseInt(content) == currentYear){
 							content = in.readLine();
 							if(Integer.parseInt(content) == currentMonth){
@@ -244,7 +255,6 @@ public class GUICalendar extends JFrame implements ActionListener{
 								int col = Integer.parseInt(in.readLine());
 								String name = in.readLine();
 								name += "<br>"+in.readLine();
-								//defCal.setValueAt(defCal.getValueAt(row, col)+ "\n" + name, row, col);
 								defCal.setValueAt("<html><b>"+defCal.getValueAt(row,col)+"<b></html>",row,col);
 								lblText.setText("<html>"+name+"</html>");
 								content = in.readLine();
@@ -276,10 +286,10 @@ public class GUICalendar extends JFrame implements ActionListener{
 
 
 	}
-    
-public static void reReading(){
-    	
-    	//reads memory text
+   
+	//Method to help rewrite over the file
+	//Reads through the file and saves everything into an array.
+	public static void reReading(){
     	try{
     	BufferedReader in;
     	in = new BufferedReader(new FileReader("memory.txt"));
@@ -290,6 +300,7 @@ public static void reReading(){
     		info[i]=content;
     		content = in.readLine();
     		i++;
+    		//counting variable to know how much the array was filled.
     		counting++;
     	}
     	in.close();
@@ -326,9 +337,11 @@ public static void reReading(){
 		return fileContent;
 	}
 
+    //Action listeners for buttons
     public void actionPerformed(ActionEvent e){
-    	
+    	//Going back
     	if(e.getActionCommand().equals("<")){
+    		//Check to see if the month is January, if it is, change the current year backward by one
     		if(currentMonth == 0){
     			currentMonth = 11;
     			currentYear -= 1;
@@ -339,7 +352,9 @@ public static void reReading(){
     		selectedCell = false;
     		changing(currentMonth, currentYear);
     	}
+    	//Going forward
     	else if(e.getActionCommand().equals(">")){
+    		//Check to see if the month is December, if it is, change the current year forward
     		if(currentMonth == 11){
     			currentMonth = 0;
     			currentYear += 1;
@@ -351,7 +366,8 @@ public static void reReading(){
     		changing(currentMonth, currentYear);
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 			//Handles the add task button
-		} else if (e.getActionCommand().equals("Add task")){
+		}
+    	else if (e.getActionCommand().equals("Add task")){
     		boolean done = false;
 			String name = "";
 			//Loops until a valid input is inputted
@@ -394,7 +410,8 @@ public static void reReading(){
 			}
 			//Refresh the text area and comob box
 			writeToDo(toDoList);
-		} else if(e.getActionCommand().equals("timer")){ //Handles the timer ticking every minute for notifications
+		}
+		else if(e.getActionCommand().equals("timer")){ //Handles the timer ticking every minute for notifications
 			    //Reads events file (memory.txt)
 				ArrayList<String> fileContent = readFile();
 				//Reads each event (each event is 6 lines long)
@@ -426,7 +443,8 @@ public static void reReading(){
 							//Prints the message returned by notification if it is time
 							JOptionPane.showMessageDialog(null, Notification.pushNotification(evt));
 						}
-					} else {
+					}
+					else {
 						//New reminder with date and name from file
 						Reminder remind = new Reminder(sDate.parseString(dates.substring(1)), name);
 						if (Notification.pushNotification(remind) != null) { //null means not time
@@ -435,7 +453,8 @@ public static void reReading(){
 						}
 					}
 				}
-		} else if(e.getActionCommand().equals("Remove")){ //Handles removing from the todo list using the combobox
+		}
+		else if(e.getActionCommand().equals("Remove")){ //Handles removing from the todo list using the combobox
 			//Items in combobox are the same order as textarea
 			//Removes the item in the index selected in combobox
 			toDoList.remove(cbDropdown.getSelectedIndex());
@@ -443,38 +462,53 @@ public static void reReading(){
 			writeToDo(toDoList);
 		}
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    	//If the add button is clicked
     	else{
 			try{
+				//Check to see if there is a value, if there is nothing, you cannot add to an empty cell
 				if(defCal.getValueAt(selectedRow, selectedCol)==null){
 					JOptionPane.showMessageDialog(pnlCal, "Selected invalid cell.");
 
 				}
+				//If the cell is a valid day then keep going
 				else{
-					currentDay = (int) defCal.getValueAt(selectedRow, selectedCol);
+					//Current day will be the selected cell
+					try{
+						currentDay = (int)defCal.getValueAt(selectedRow, selectedCol);
+					}
+					catch (Exception e1) {
+						currentDay = format(defCal.getValueAt(selectedRow, selectedCol).toString());
+					}
+
 					Schedule temp = null;
+					//Asking user what they would like to add
 					String [] choices = {"Event", "Reminder", "Cancel"};
 					int choice =(JOptionPane.showOptionDialog(null, "Choose what you would like to add", "Adding", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]));
-
+					//They chose to add an event
 					if(choice == 0){
 						String name;
 						String from;
 						String to;
+						//Asking for information using JOption Pane
 						name = JOptionPane.showInputDialog("Event Name");
 						from = JOptionPane.showInputDialog("From: (00:00 format)");
 						to = JOptionPane.showInputDialog("To: (00:00 format)");
+						//Checking to see if the time that was inputted was valid or not
 						if(checkTime(from)&&checkTime(to)){
 							sDate sday = new sDate(currentYear, currentMonth+1, currentDay, sDate.gethrs(from), sDate.getmin(from));
 							sDate sday1 = new sDate(currentYear, currentMonth+1, currentDay, sDate.gethrs(to), sDate.getmin(to));
-
+							//Creates the dates for that event as well as the event itself.
 							temp = new Event (sday, sday1, name);
+							//Method that is saving text file into array.
 							reReading();
+							//Now writing back into the file.
 							BufferedWriter out = new BufferedWriter(new FileWriter("memory.txt"));
-
+							//Putting everything from array back into file.
 							for(int i = 0; i < counting; i++){
 								out.append(info[i]);
 								out.newLine();
 							}
-
+							//Adding the new information the user gave.
 							out.append(Integer.toString(currentYear));
 							out.newLine();
 							out.append("" + currentMonth);
@@ -488,23 +522,23 @@ public static void reReading(){
 							out.close();
 							defCal.setValueAt("<html><b>"+defCal.getValueAt(selectedRow,selectedCol)+"</html>",selectedRow,selectedCol);
 						}
+						//If invalid time, message diaolog telling uer.
 						else{
 							JOptionPane.showMessageDialog(pnlCal, "Invalid Time");
 						}
-						//defCal.setValueAt(defCal.getValueAt(selectedRow, selectedCol)+ "\n" +name, selectedRow, selectedCol);
-
-
 					}
+					//Choosing to add a reminder
 					else if(choice == 1){
+						//Asking for information
 						String name = JOptionPane.showInputDialog("Reminder Name");
 						String time = JOptionPane.showInputDialog("Time: (00:00 format)");
-
+						//Checking if time is valid.
 						if(checkTime(time)){
 							sDate sday = new sDate(currentYear, currentMonth+1, currentDay, sDate.gethrs(time), sDate.getmin(time));
 							temp = new Reminder(sday, name);
 							reReading();
 							BufferedWriter out = new BufferedWriter(new FileWriter("memory.txt"));
-
+							//Writing into the text file.
 							for(int i = 0; i < counting; i++){
 								out.append(info[i]);
 								out.newLine();
@@ -521,7 +555,6 @@ public static void reReading(){
 							out.append(temp.toString());
 							out.newLine();
 							out.close();
-							//BOLDIGN!!!!
 							defCal.setValueAt("<html><b>"+defCal.getValueAt(selectedRow,selectedCol)+"</html>",selectedRow,selectedCol);
 						}
 						else{
@@ -541,26 +574,33 @@ public static void reReading(){
 			}
         	
         	}
-    
     	
     }
-    
-    
 
-
+    public static int format (String day){
+    	String  number = "";
+    	number += day.charAt(9);
+    	if(day.charAt(10)!= '<'){
+    		number += day.charAt(10);
+		}
+		return Integer.parseInt(number);
+	}
+    
+    //Method used to refresh the JTable when going through different months and years.
     public static void changing(int month, int year){
     	
         String [] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
         int numDays, chosenMonth;
         lblMonthandYear.setText(months[month] + " " + Integer.toString(year));
-
+        
+        //Setting the values into the JTable (the values of the days)
         for(int i = 0; i < 6; i++){
             for(int j = 0; j < 7; j++){
                 defCal.setValueAt(null, i, j);
             }
         }
         
-        
+        //Checking whether a month has 30 or 31 days (exception with February)
         if(month == 1){
         	if((year%4)==0){
         		numDays = 29;
@@ -568,7 +608,6 @@ public static void reReading(){
         	else{
         		numDays = 28;
         	}
-        	
         }
         else if(month <= 6){
         	if((month%2)==0){
@@ -591,18 +630,22 @@ public static void reReading(){
         	numDays = 0;
         }
         
+        //Using the Gregorian Calendar (standard calendar) to compare
+        //Figuring out when the first day starts in the month.
         GregorianCalendar temp = new GregorianCalendar(year,month,1);
         chosenMonth = temp.get(GregorianCalendar.DAY_OF_WEEK);
+        System.out.println(chosenMonth);
         
+        //Once that day is found, add the rest of the days to the following cells based on number of rows and column.
         for(int i = 1; i <= numDays; i++){
         	int row = new Integer((i+chosenMonth-2)/7);
         	int col = (i+chosenMonth-2)%7;
         	defCal.setValueAt(i, row, col);
         }
         
-        
-        
+        //Renderer
         tblCal.setDefaultRenderer(tblCal.getColumnClass(0), new tblCalRenderer());
+        //Method that reads the text file and inputs all information that is in there.
         reading();
 
     }
@@ -627,6 +670,7 @@ public static void reReading(){
 		txtTodo.setText(output);
 	}
     
+	//Renderer method
     static class tblCalRenderer extends DefaultTableCellRenderer{
  
 		private static final long serialVersionUID = 1L;
@@ -634,12 +678,14 @@ public static void reReading(){
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col){
     	super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
     	if(hasFocus){
+    		//If the cell is focused, change the cell color
     		setBackground(Color.cyan);
+    		//Variable to tell us which row and column is selected
     		selectedRow = table.getSelectedRow();
     		selectedCol = table.getSelectedColumn();
-    		//System.out.println(selectedRow + " " + selectedCol);
     		selectedCell = true;
     		lblText.setText("empty");
+    		//Checking if there is any information for that cell
     		reading();
     		
     	}
@@ -653,7 +699,8 @@ public static void reReading(){
     	return this;
     	}
     }
-
+    
+    //Method to check if time that was inputted is valid
 	public static boolean checkTime(String time){
 		try{
 			if(sDate.gethrs(time)>24||sDate.gethrs(time)<0){
@@ -674,6 +721,7 @@ public static void reReading(){
 		}
 	}
 
+	
     public static void main (String [] args){
         GUICalendar hello = new GUICalendar();
     }
