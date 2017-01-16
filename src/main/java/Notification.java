@@ -18,32 +18,20 @@ public class Notification {
         return Duration.between(LocalDateTime.now(), sDate.convertToLocalDateTime(item.getFrom())).getSeconds();
     }
 
-    public void pushNotification(Reminder item){
-        if(item.isTime()){
-           popupNotification(item.getName() + " is happening right now!");
-           GUINotification("Boop! It's time for " + item.getName());
-        } else if(timeDifference(item) < 1){
-            GUINotification(item.getName() + " is happening in " + (int)timeDifference(item) + " hours.");
+    public static String pushNotification(Reminder item){
+        if(item.isTime()) {
+            return item.getName() + " is happening right now!";
+        } else {
+            return null;
         }
     }
 
-    public void pushNotification(Event item){
-        if(item.isTime()){
-            popupNotification(item.getName() + " is happening right now!");
-            GUINotification("Boop! It's time for " + item.getName());
-        } else if(timeDifference(item) < 1){
-            GUINotification(item.getName() + " is happening in " + (int)timeDifference(item) + " hours.");
+    public static String pushNotification(Event item){
+        if(item.isTime()) {
+            return item.getName() + " is happening right now!";
+        } else {
+            return null;
         }
-    }
-
-    public void popupNotification(String message){
-        //Placeholder method
-        //gui.popupNotification(message);
-    }
-
-    public void GUINotification(String message){
-        //Placeholder method
-        //gui.doNotification(message);
     }
 
 }

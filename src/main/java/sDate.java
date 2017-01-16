@@ -43,7 +43,7 @@ public class sDate {
     		this.min = mi;
     	}
     }
-    
+
     public static String getMName(int m){
     	String [] months = {"Empty", "Jan", "Feb", "March", "Apr", "May", "June", "July", "August", "Sep", "October", "Nov", "Dec"};
     	String temp = "";
@@ -61,17 +61,29 @@ public class sDate {
 		return -1;
 	}
     //ToString in format: "{month} {date}, {year} {hours}:{mins}
-    public String toString(){
-    	//if less than 10, add 0 to month and day
-    	String month1 = getMName(this.month);
-    	if(this.day < 10){
-    		return (month1 + " 0" + this.day +", " + this.year + " "+this.hrs+":" + this.min);
-    	}
-    	else{
-    		return (month1 + " " + this.day +", " + this.year + " "+this.hrs+":" + this.min);
-    	}
-    	
-    }
+	public String toString(){
+		//if less than 10, add 0 to month and day
+		String month1 = getMName(this.month);
+		if(this.day < 10){
+			if(this.min<10){
+				return (month1 + " 0" + this.day +"," + this.year + " "+this.hrs+":" + "0"+ this.min);
+			}
+			else{
+				return (month1 + " 0" + this.day +"," + this.year + " "+this.hrs+":" + this.min);
+			}
+
+		}
+		else{
+			if(this.min<10){
+				return (month1 + " " + this.day +"," + this.year + " "+this.hrs+":" + this.min + "0");
+			}
+			else{
+				return (month1 + " " + this.day +"," + this.year + " "+this.hrs+":" + this.min);
+			}
+		}
+
+	}
+
 	//Uses LocalDateTime.now() to get current time, then converts it to sDate
     public static sDate now(){
     	return ldtTosDate(LocalDateTime.now());
@@ -115,6 +127,7 @@ public class sDate {
     	this.min = m;
     }
 
+
 	public static int gethrs (String temp){
 		String hr = "";
 		for(int i = 0; i < temp.length(); i ++){
@@ -145,7 +158,7 @@ public class sDate {
     //Parses a Date string (written in same format as ToString())
     public static sDate parseString(String input){
     	//Removes commas
-    	input = input.replaceAll(",", "");
+    	input = input.replaceAll(",", " ");
     	//Splits the text by spaces
     	String[] partsString = input.split(" ");
     	//Holds each part, converted to int
@@ -163,6 +176,7 @@ public class sDate {
 		//Constructs a new sDate and returns it
 		return new sDate(parts[2],parts[0],parts[1],parts[3],parts[4]);
 	}
+
 	//Converts an sDate into LocalDateTime
     public static LocalDateTime convertToLocalDateTime(sDate date){
     	//Changes every property of the LocalDateTime to that of the sDate
@@ -177,7 +191,7 @@ public class sDate {
 	//Used in place of equals in LocalDateTime (cannot override the original due to LocalDateTime being a final class, and this is simpler than making a wrapper class)
 	//Compares everything except for seconds
 	public static boolean localDatesEqual(LocalDateTime dateOne, LocalDateTime dateTwo){
-		if(dateOne.getYear() == dateTwo.getYear() && dateOne.getMonth() == dateTwo.getMonth() && dateOne.getDayOfMonth() == dateTwo.getDayOfMonth() && dateOne.getHour() == dateTwo.getHour()){
+		if(dateOne.getYear() == dateTwo.getYear() && dateOne.getMonth() == dateTwo.getMonth() && dateOne.getDayOfMonth() == dateTwo.getDayOfMonth() && dateOne.getHour() == dateTwo.getHour() && dateOne.getMinute() == dateTwo.getMinute()){
 			return true;
 		} else {
 			return false;

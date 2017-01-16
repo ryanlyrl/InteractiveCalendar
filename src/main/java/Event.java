@@ -40,16 +40,17 @@ public class Event extends Schedule{
 	//Compares to current time
 	public boolean isTime(){
 		if(sDate.localDatesEqual(LocalDateTime.now(),sDate.convertToLocalDateTime(this.from))){
+			System.out.println(LocalDateTime.now() + " and " + sDate.convertToLocalDateTime(this.from));
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	//ToString in format: "{name} \n {from} \n {to}
-    public String toString(){
-    	return (super.toString()+"\n"+this.from+"\n"+this.to+"\n");
-    }
+	//ToString in format: "{name}  {from} to {to}
+	public String toString(){
+		return (super.toString()+" "+this.from +" to "+this.to);
+	}
     
     
 }

@@ -1,9 +1,3 @@
-/**
- * GUICalendar.java
- *
- * @author Stephanie Wang and Ryan Ly
- * @version 1.00 2016/12/20
- */
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -14,17 +8,17 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-//TODO: Comment methods so that it is clear who wrote what (for marking purposes)
-//Arrows denote changes in code done by Ryan ( '>' = open, '<' = close)
 public class GUICalendar extends JFrame implements ActionListener{
     /**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	static JLabel lblMonthandYear, lblText;
-    JButton btnPrev, btnNext, btnAdd, btnToDoAdd;
+	static JLabel lblMonthandYear, lblText, lblTodoHeader;
+	static JTextArea txtTodo;
+    JButton btnPrev, btnNext, btnAdd, btnToDoAdd, btnPushToDo;
     static JTable tblCal;
     Container pane;
     static DefaultTableModel defCal;
@@ -32,28 +26,26 @@ public class GUICalendar extends JFrame implements ActionListener{
     JPanel pnlCal;
     static int currentMonth, currentYear, currentDay, month, day, year;
     static int selectedRow, selectedCol;
-    boolean annoyance = true;
     static boolean selectedCell = false;
     static FileWriter fw = null;
-    File file = new File ("memory.txt");
-	ToDo toDoList = new ToDo();
+    static String [] info = new String [1000000];
+	static int counting=0;
+	static Timer notificationTimer;
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	ToDo toDoList = new ToDo();
 	private final String TO_DO_FILE = "todo.txt";
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-	
-   
 
     public GUICalendar(){   		
     	
-
         String [] week = {"Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"};
         
         currentMonth = 1;
         currentYear = 2017;
-        currentDay = 9;
+        currentDay = 13;
 
         this.setSize(900,500);
-        this.setTitle("ICS4UR vs1.0");
+        this.setTitle("ICS4UR vs 1.0");
         pane = this.getContentPane();
         pane.setLayout(null);
 
@@ -63,17 +55,27 @@ public class GUICalendar extends JFrame implements ActionListener{
         this.setResizable(false);
         
         lblText = new JLabel();
+        txtTodo = new JTextArea();
+        lblTodoHeader = new JLabel();
         lblMonthandYear = new JLabel();
-        
-        btnPrev = new JButton("<");
+        notificationTimer = new Timer(60000, this);
+		notificationTimer.setInitialDelay(0);
+		notificationTimer.start();
+		notificationTimer.setActionCommand("timer");
+
+		btnPrev = new JButton("<");
         btnNext = new JButton(">");
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        btnToDoAdd = new JButton("Add to ToDo List");
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		btnToDoAdd = new JButton("Add task");
+		btnPushToDo = new JButton("GIVE ME SOME SHIT TO DO!");
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         btnAdd = new JButton("+");
         btnAdd.setBackground(Color.PINK);
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        btnToDoAdd.setBackground(Color.LIGHT_GRAY);
+		btnToDoAdd.setBackground(Color.LIGHT_GRAY);
+		btnPushToDo.setBackground(Color.LIGHT_GRAY);
+		//txtTodo.setBackground(tblCal.getBackground());
+		txtTodo.setEditable(false);
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         defCal = new DefaultTableModel(){
 			private static final long serialVersionUID = 1L;
@@ -92,34 +94,45 @@ public class GUICalendar extends JFrame implements ActionListener{
         btnNext.addActionListener(this);
         btnAdd.addActionListener(this);
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        btnToDoAdd.addActionListener(this);
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		btnToDoAdd.addActionListener(this);
+		btnPushToDo.addActionListener(this);
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 
         pane.add(pnlCal);
         pnlCal.add(lblMonthandYear);
         pnlCal.add(lblText);
+        pnlCal.add(txtTodo);
+        pnlCal.add(lblTodoHeader);
         pnlCal.add(btnPrev);
         pnlCal.add(btnNext);
         pnlCal.add(btnAdd);
-		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        pnlCal.add(btnToDoAdd);
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         pnlCal.add(sCal);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		pnlCal.add(btnToDoAdd);
+		pnlCal.add(btnPushToDo);
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         this.setVisible(true);
         pnlCal.setBounds(0, 0,880, 460);
         lblMonthandYear.setBounds(190, 25, 100, 25);
-        //lblText.setLocation(510, 25);
-        lblText.setBounds(510, 25, 400, 400);
+        lblTodoHeader.setBounds(510, 225, 400, 25);
+        lblTodoHeader.setText("To Do");
+        lblTodoHeader.setVerticalAlignment(JLabel.TOP);
+        txtTodo.setBounds(510, 250, 300, 125);
+        txtTodo.setText("empty");
+        //txtTodo.setVerticalAlignment(JLabel.TOP);
+        lblText.setBounds(510, 25, 400, 200);
         lblText.setText("empty");
         btnPrev.setBounds(10, 25, 50, 25);
         btnNext.setBounds(420, 25, 50, 25);
         btnAdd.setBounds(410, 390, 50, 50);
-		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        btnToDoAdd.setBounds(500, 390, 50, 25);
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         tblCal.setBounds(10, 120, 460, 375);
         sCal.setBounds(10,65,460, 385);
+		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		btnToDoAdd.setBounds(500, 390, 100, 25);
+		btnPushToDo.setBounds(700, 390, 100, 25);
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         for(int i = 0; i < week.length; i++){
             defCal.addColumn(week[i]);
@@ -140,8 +153,10 @@ public class GUICalendar extends JFrame implements ActionListener{
     	
 
         changing(currentMonth, currentYear);
+
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 		toDoList.readFile(TO_DO_FILE);
+		writeToDo(toDoList);
 
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
@@ -152,98 +167,119 @@ public class GUICalendar extends JFrame implements ActionListener{
 		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     }
+
+	public static void reading(){
+		//reads memory text
+		try{
+			String list="";
+			BufferedReader in;
+			in = new BufferedReader(new FileReader("memory.txt"));
+			String content = in.readLine();
+			if(content!= null){
+				//GET THE WHILE LOOP TO WORK!!
+				while(content!=null){
+					if(selectedCell){
+						if(Integer.parseInt(content)== currentYear){
+							content = in.readLine();
+							if(Integer.parseInt(content)==currentMonth){
+								content = in.readLine();
+								if(Integer.parseInt(content)==selectedRow){
+									content = in.readLine();
+									if(Integer.parseInt(content)==selectedCol){
+										list += "<br>" + in.readLine();
+										list += "<br>"+in.readLine();
+										lblText.setText("<html>"+list+"</html");
+										content = in.readLine();
+									}
+									else{
+										content = in.readLine();
+										content = in.readLine();
+										content = in.readLine();
+									}
+								}
+								else{
+									content = in.readLine();
+									content = in.readLine();
+									content = in.readLine();
+									content = in.readLine();
+								}
+							}
+							else{
+								content = in.readLine();
+								content = in.readLine();
+								content = in.readLine();
+								content = in.readLine();
+								content = in.readLine();
+							}
+						}
+						else{
+							content = in.readLine();
+							content = in.readLine();
+							content = in.readLine();
+							content = in.readLine();
+							content = in.readLine();
+							content = in.readLine();
+						}
+					}
+					else{
+
+						if(Integer.parseInt(content) == currentYear){
+							content = in.readLine();
+							if(Integer.parseInt(content) == currentMonth){
+								int row = Integer.parseInt(in.readLine());
+								int col = Integer.parseInt(in.readLine());
+								String name = in.readLine();
+								name += "<br>"+in.readLine();
+								//defCal.setValueAt(defCal.getValueAt(row, col)+ "\n" + name, row, col);
+								defCal.setValueAt("<html><b>"+defCal.getValueAt(row,col)+"<b></html>",row,col);
+								lblText.setText("<html>"+name+"</html>");
+								content = in.readLine();
+							}
+							else{
+								content=null;
+							}
+						}
+						else{
+							content=null;
+						}
+					}
+
+				}
+				in.close();
+			}
+
+			in.close();
+		}
+		catch(FileNotFoundException e){
+			System.out.println("Error: Cannot open file for reading.");
+		}
+		catch (EOFException e){
+			System.out.println("Error: EOF encountered, file may be corrupt.");
+		}
+		catch(IOException e){
+			System.out.println("Error: Cannot read from file.");
+		}
+
+
+	}
     
-    public static void reading(){
+public static void reReading(){
     	
     	//reads memory text
     	try{
-    	String list="";
     	BufferedReader in;
     	in = new BufferedReader(new FileReader("memory.txt"));
-    		String content = in.readLine();
-    		
-    		if(content!= null){
-    		//GET THE WHILE LOOP TO WORK!!
-    		while(content!=null){
-    			if(selectedCell){
-    				if(Integer.parseInt(content)== currentYear){
-    					System.out.println(content);
-    					content = in.readLine();
-    					if(Integer.parseInt(content)==currentMonth){
-    						System.out.println(content);
-    						content = in.readLine();
-    						if(Integer.parseInt(content)==selectedRow){
-    							System.out.println(content);
-    							content = in.readLine();
-    							if(Integer.parseInt(content)==selectedCol){
-    								System.out.println(content);
-    								list += "\n" + in.readLine();
-    								content = in.readLine();
-    								System.out.println("HERE");
-    								System.out.println(list+"\n"+content);
-    								lblText.setText("<html>"+list + "<br>" + content+"</html>");
-    								content = in.readLine();
-    								System.out.println("A"+content);
-    							}
-    							else{
-    								content = in.readLine();
-    								content = in.readLine();
-    								content = in.readLine();
-    								System.out.println(content+"HEY");
-    							}
-    						}
-    						else{
-    							content = in.readLine();
-    							content = in.readLine();
-    							content = in.readLine();
-    							content = in.readLine();
-    						}
-    					}
-    					else{
-    						content = in.readLine();
-    						content = in.readLine();
-    						content = in.readLine();
-    						content = in.readLine();
-    						content = in.readLine();
-    					}
-    				}
-    				else{
-    					content = in.readLine();
-    					content = in.readLine();
-    					content = in.readLine();
-    					content = in.readLine();
-    					content = in.readLine();
-    					content = in.readLine();
-    				}
-    			}
-    			else{
-    				if(Integer.parseInt(content) == currentYear){
-    					System.out.println(content);
-    					content = in.readLine();
-    				if(Integer.parseInt(content) == currentMonth){
-    					System.out.println(content);
-    					int row = Integer.parseInt(in.readLine());
-    					System.out.println(row);
-    					int col = Integer.parseInt(in.readLine());
-    					System.out.println(col);
-    					String name = in.readLine();
-    					System.out.println(name);
-    					//System.out.println(name);
-    					content = in.readLine();
-    					System.out.println(content);
-    					defCal.setValueAt(defCal.getValueAt(row, col)+ "\n" + name, row, col);
-    					lblText.setText(name + "\n" + content);
-    					content = in.readLine();
-    					System.out.println("H"+content);
-    				}
-    				}
-    			}
-    			
-    		}
-    		in.close();
+    	counting = 0;
+    	String content = in.readLine();
+    	int i = 0;
+    	while(content!=null){
+    		info[i]=content;
+    		content = in.readLine();
+    		i++;
+    		counting++;
     	}
-
     	in.close();
+    			
     	}
     	catch(FileNotFoundException e){
     		System.out.println("Error: Cannot open file for reading.");
@@ -258,6 +294,24 @@ public class GUICalendar extends JFrame implements ActionListener{
     	
     }
 
+    public ArrayList readFile(){
+		ArrayList<String> fileContent = new ArrayList<>();
+		try {
+			BufferedReader in;
+			in = new BufferedReader(new FileReader("memory.txt"));
+			String content = in.readLine();
+			while(content != null){
+				fileContent.add(content);
+				content = in.readLine();
+			}
+		} catch (FileNotFoundException e){
+			System.out.println("File not found.");
+		} catch (IOException e ){
+			System.out.println("Error with file.");
+		}
+		return fileContent;
+	}
+
     public void actionPerformed(ActionEvent e){
     	
     	if(e.getActionCommand().equals("<")){
@@ -269,8 +323,7 @@ public class GUICalendar extends JFrame implements ActionListener{
     			currentMonth -= 1;
     		}
     		selectedCell = false;
-    		changing1(currentMonth, currentYear);
-    		//reading();
+    		changing(currentMonth, currentYear);
     	}
     	else if(e.getActionCommand().equals(">")){
     		if(currentMonth == 11){
@@ -281,142 +334,174 @@ public class GUICalendar extends JFrame implements ActionListener{
     			currentMonth+=1;
     		}
     		selectedCell = false;
-    		changing1(currentMonth, currentYear);
-    		//reading();
+    		changing(currentMonth, currentYear);
 			//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    	} else if (e.getActionCommand().equals("Add to ToDo List")){
-			String name = JOptionPane.showInputDialog("Item Name");
-			boolean validImp = false;
-			String[] option = {"Low","Medium","High"};
-			int importance = JOptionPane.showOptionDialog(null,
-					"Importance",
+		} else if (e.getActionCommand().equals("Add task")){
+    		boolean done = false;
+			String name = "";
+			while(!done) {
+				name = JOptionPane.showInputDialog("Item Name");
+				done = true;
+				if(name != null){
+					if(name.trim().equals("")) {
+						done = false;
+					}
+				}
+			}
+			if(name != null) {
+				String[] option = {"Low","Medium","High"};
+				int importance = (JOptionPane.showOptionDialog(null,
 					"Pick the importance of the task.",
+					"Importance",
 					JOptionPane.DEFAULT_OPTION,
 					JOptionPane.PLAIN_MESSAGE,
 					null,
 					option,
-					option[0]) + 1;
-			toDoList.addLast(new Task(name, importance));
+					option[0]) + 2);
+				toDoList.addLast(new Task(name, importance));
+			}
+			writeToDo(toDoList);
+		} else  if(e.getActionCommand().equals("GIVE ME SOME SHIT TO DO!")){
+			if(toDoList.length > 0) {
+				JOptionPane.showMessageDialog(null, "Task for you to do!\n" + toDoList.pushTask().getName());
+			} else {
+				JOptionPane.showMessageDialog(null, "You have no tasks left to do!");
+			}
+			writeToDo(toDoList);
+		} else if(e.getActionCommand().equals("timer")){
+				ArrayList<String> fileContent = readFile();
+				for (int i = 0; i < fileContent.size() / 6; i++) {
+					String dates = fileContent.get(i * 6 + 5);
+					String name = fileContent.get(i * 6 + 4);
+					if (dates.contains("to")) {
+						int index1 = 0;
+						int index2 = 0;
+						for (int j = 0; j < dates.length(); j++) {
+							if (dates.charAt(j) == ':') {
+								index1 = j + 2;
+								index2 = j + 7;
+								break;
+							}
+						}
+						sDate from = sDate.parseString(dates.substring(0, index1 + 1));
+						sDate to = sDate.parseString(dates.substring(index2));
+
+						Event evt = new Event(from, to, name);
+						if (Notification.pushNotification(evt) != null) {
+							JOptionPane.showMessageDialog(null, Notification.pushNotification(evt));
+						}
+					} else {
+						Reminder remind = new Reminder(sDate.parseString(dates), name);
+						if (Notification.pushNotification(remind) != null) {
+							JOptionPane.showMessageDialog(null, Notification.pushNotification(remind));
+						}
+					}
+				}
 		}
-			//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+		//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     	else{
-    		try{
-    		if(defCal.getValueAt(selectedRow, selectedCol)==null){
-    			JOptionPane.showMessageDialog(pnlCal, "Selected invalid cell.");
-    			
-        	}
-    		else{
-    			String name;
-    			String from;
-    			String to;
-    			name = JOptionPane.showInputDialog("Event Name");
-    			from = JOptionPane.showInputDialog("From: ");
-    			to = JOptionPane.showInputDialog("To: ");
-    			
-    			System.out.println(selectedRow + " " + selectedCol);
-    			
-    			defCal.setValueAt(defCal.getValueAt(selectedRow, selectedCol)+ "\n" +name, selectedRow, selectedCol);
-    			
-    			sDate sday = new sDate(currentYear, currentMonth+1, currentDay+1, sDate.gethrs(from), sDate.getmin(from));
-    			sDate sday1 = new sDate(currentYear, currentMonth+1, currentDay+1, sDate.gethrs(to), sDate.getmin(to));
-    			
-    			Schedule temp = new Event (sday, sday1, name);
-        		
-        		BufferedWriter out;
-        			
-        		if(annoyance){
-        			fw = new FileWriter(file, true);
-        			annoyance = false;
-        		}
-    //IT WON'T APPEND IF PROGRAM DOESN'T CLOSE.
-        			
-        			out = new BufferedWriter(fw);
-            		out.append(Integer.toString(currentYear));
-            		out.newLine();
-            		out.append("" + currentMonth);
-            		out.newLine();
-            		out.append("" + selectedRow);
-            		out.newLine();
-            		out.append("" + selectedCol);
-            		out.newLine();
-            		out.append(temp.toString());
-            		out.newLine();
-            		out.close();
-        		
-        		defCal.setValueAt(defCal.getValueAt(selectedRow, selectedCol)+ "\n" +name, selectedRow, selectedCol);
-        				
-    		}
-    		}
-    		
-    		catch(FileNotFoundException e1){
-    			System.out.println ("Error: Cannot open file for writing");
-    		}
-    		catch (IOException e1){
-    			System.out.println ("Error: Cannot write to file");
-    		}
+			try{
+				if(defCal.getValueAt(selectedRow, selectedCol)==null){
+					JOptionPane.showMessageDialog(pnlCal, "Selected invalid cell.");
+
+				}
+				else{
+					currentDay = (int) defCal.getValueAt(selectedRow, selectedCol);
+					Schedule temp = null;
+					String [] choices = {"Event", "Reminder", "Cancel"};
+					int choice =(JOptionPane.showOptionDialog(null, "Choose what you would like to add", "Adding", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, choices, choices[0]));
+
+					if(choice == 0){
+						String name;
+						String from;
+						String to;
+						name = JOptionPane.showInputDialog("Event Name");
+						from = JOptionPane.showInputDialog("From: (00:00 format)");
+						to = JOptionPane.showInputDialog("To: (00:00 format)");
+						if(checkTime(from)&&checkTime(to)){
+							sDate sday = new sDate(currentYear, currentMonth+1, currentDay, sDate.gethrs(from), sDate.getmin(from));
+							sDate sday1 = new sDate(currentYear, currentMonth+1, currentDay, sDate.gethrs(to), sDate.getmin(to));
+
+							temp = new Event (sday, sday1, name);
+							reReading();
+							BufferedWriter out = new BufferedWriter(new FileWriter("memory.txt"));
+
+							for(int i = 0; i < counting; i++){
+								out.append(info[i]);
+								out.newLine();
+							}
+
+							out.append(Integer.toString(currentYear));
+							out.newLine();
+							out.append("" + currentMonth);
+							out.newLine();
+							out.append("" + selectedRow);
+							out.newLine();
+							out.append("" + selectedCol);
+							out.newLine();
+							out.append(temp.toString());
+							out.newLine();
+							out.close();
+						}
+						else{
+							JOptionPane.showMessageDialog(pnlCal, "Invalid Time");
+						}
+						//defCal.setValueAt(defCal.getValueAt(selectedRow, selectedCol)+ "\n" +name, selectedRow, selectedCol);
+
+
+					}
+					else if(choice == 1){
+						String name = JOptionPane.showInputDialog("Reminder Name");
+						String time = JOptionPane.showInputDialog("Time: (00:00 format)");
+
+						if(checkTime(time)){
+							sDate sday = new sDate(currentYear, currentMonth+1, currentDay, sDate.gethrs(time), sDate.getmin(time));
+							temp = new Reminder(sday, name);
+							reReading();
+							BufferedWriter out = new BufferedWriter(new FileWriter("memory.txt"));
+
+							for(int i = 0; i < counting; i++){
+								out.append(info[i]);
+								out.newLine();
+							}
+
+							out.append(Integer.toString(currentYear));
+							out.newLine();
+							out.append("" + currentMonth);
+							out.newLine();
+							out.append("" + selectedRow);
+							out.newLine();
+							out.append("" + selectedCol);
+							out.newLine();
+							out.append(temp.toString());
+							out.newLine();
+							out.close();
+							//BOLDIGN!!!!
+							defCal.setValueAt("<html><b>"+defCal.getValueAt(selectedRow,selectedCol)+"</html>",selectedRow,selectedCol);
+						}
+						else{
+							JOptionPane.showMessageDialog(pnlCal, "Invalid Time");
+						}
+
+					}
+
+				}
+			}
+
+			catch(FileNotFoundException e1){
+				System.out.println ("Error: Cannot open file for writing");
+			}
+			catch (IOException e1){
+				System.out.println ("Error: Cannot write to file");
+			}
         	
         	}
     
     	
     }
     
-    public static void changing1(int month, int year){
-    	
-        String [] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
-        int numDays, chosenMonth;
-        lblMonthandYear.setText(months[month] + " " + Integer.toString(year));
+    
 
-        for(int i = 0; i < 6; i++){
-            for(int j = 0; j < 7; j++){
-                defCal.setValueAt(null, i, j);
-            }
-        }
-        
-        
-        if(month == 1){
-        	if((year%4)==0){
-        		numDays = 29;
-        	}
-        	else{
-        		numDays = 28;
-        	}
-        	
-        }
-        else if(month <= 6){
-        	if((month%2)==0){
-        		numDays = 31;
-        	}
-        	else{
-        		numDays = 30;
-        	}
-        	
-        }
-        else if(month > 6){
-        	if((month%2)==0){
-        		numDays = 30;
-        	}
-        	else{
-        		numDays = 31;
-        	}
-        }
-        else{
-        	numDays = 0;
-        }
-        
-        GregorianCalendar temp = new GregorianCalendar(year,month,1);
-        chosenMonth = temp.get(GregorianCalendar.DAY_OF_WEEK);
-        
-        for(int i = 1; i <= numDays; i++){
-        	int row = new Integer((i+chosenMonth-2)/7);
-        	int col = (i+chosenMonth-2)%7;
-        	defCal.setValueAt(i, row, col);
-        }
-        
-        
-        
-        tblCal.setDefaultRenderer(tblCal.getColumnClass(0), new tblCalRenderer());
-
-    }
 
     public static void changing(int month, int year){
     	
@@ -473,10 +558,22 @@ public class GUICalendar extends JFrame implements ActionListener{
         
         
         tblCal.setDefaultRenderer(tblCal.getColumnClass(0), new tblCalRenderer());
-        System.out.println("STEPH");
         reading();
 
     }
+
+    //>>>>>>>>>>>>>>>
+	public static void writeToDo(ToDo list){
+    	if(list.length == 0){
+    		txtTodo.setText("No tasks to do!");
+    		return;
+		}
+    	String output = "";
+    	for(int i = 0;i < list.length;i++){
+    		output += (((Task)(list.findNode(i)).cargo).getName() + "\n");
+		}
+		txtTodo.setText(output);
+	}
     
     static class tblCalRenderer extends DefaultTableCellRenderer{
  
@@ -488,17 +585,14 @@ public class GUICalendar extends JFrame implements ActionListener{
     		setBackground(Color.cyan);
     		selectedRow = table.getSelectedRow();
     		selectedCol = table.getSelectedColumn();
-    		System.out.println("CLICKED");
-    		System.out.println(selectedRow + " " + selectedCol);
-    		//CHANGING TO LABEL
-    		//currentDay = (int) defCal.getValueAt(selectedRow, selectedCol);
+    		//System.out.println(selectedRow + " " + selectedCol);
     		selectedCell = true;
     		lblText.setText("empty");
     		reading();
     		
     	}
     	else if(isSelected){
-    		setBackground(table.getSelectionBackground());
+    		setBackground(table.getBackground());
     	}
     	else{
     		setBackground(table.getBackground());
@@ -507,6 +601,26 @@ public class GUICalendar extends JFrame implements ActionListener{
     	return this;
     	}
     }
+
+	public static boolean checkTime(String time){
+		try{
+			if(sDate.gethrs(time)>24||sDate.gethrs(time)<0){
+				return false;
+			}
+			else{
+				if(sDate.getmin(time)>59||sDate.getmin(time)<0){
+					return false;
+				}
+				else{
+					return true;
+				}
+			}
+
+		}
+		catch(Exception e1){
+			return false;
+		}
+	}
 
     public static void main (String [] args){
         GUICalendar hello = new GUICalendar();

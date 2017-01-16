@@ -36,7 +36,7 @@ public class Reminder extends Schedule{
 
     //ToString in format: "
     public String toString(){
-    	return(super.toString()+"\n"+this.date);
+    	return(super.toString()+" "+this.date);
     }
     
     
